@@ -5,11 +5,11 @@ page.settings.userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (K
 
 page.open('https:/instagram.com/accounts/login/', function() {
 	 
-	 var ig = page.evaluate(function() {
+	var ig = page.evaluate(function() {
 		function getCoords(box) {
 			return  {
 				x: box.left,
-					y: box.top 
+			  y: box.top 
 			};
 		}	
 
