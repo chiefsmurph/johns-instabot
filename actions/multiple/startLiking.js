@@ -8,7 +8,7 @@ const {
 } = require('../../utils');
 
 // settings
-const settings = require('../../settings.json');
+const settings = require('../../settings.js');
 
 
 const startLiking = (category, cookies) => {
@@ -21,11 +21,11 @@ const startLiking = (category, cookies) => {
         const numPerCall = 2;
         const neededCallsPerHour = maxPerHour / numPerCall;
         const msInHr = 60000 * 60;
-        const desiredWaitTimeInMs = msInHr / neededCallsPerHour;
+        const targetWaitTimeInMs = msInHr / neededCallsPerHour;
 
         const randLimits = {
-          low: desiredWaitTimeInMs - (desiredWaitTimeInMs / 3),
-          high: desiredWaitTimeInMs + (desiredWaitTimeInMs / 3)
+          low: targetWaitTimeInMs - (targetWaitTimeInMs / 3),
+          high: targetWaitTimeInMs + (targetWaitTimeInMs / 3)
         };
 
         const waitTime = randBetween(randLimits.low, randLimits.high); // 1 - 3 min

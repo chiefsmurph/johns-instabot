@@ -9,12 +9,13 @@ const likePicture = require('../singles/likePicture');
 const { randBetween, msToMin } = require('../../utils');
 
 // settings
-const settings = require('../../settings.json');
+const settings = require('../../settings.js');
 
 // end imports
 
 const scheduleLikeInFuture = (url, cookies) => {
-  const waitTime = randBetween(1000, 60000 * 18); // 1 sec - 18 min
+  const rangeInMs = settings.likes.waitToLikeRange.map(min => min * 1000 * 60);
+  const waitTime = randBetween.apply(null, rangeInMs);
   setTimeout(() => {
     likePicture(url, cookies);
   }, waitTime);

@@ -1,8 +1,0 @@
-{
-  "likes": {
-      "enabled": true,
-      "maxPerHour": 60
-  },
-  "comments": null,
-  "follows": null
-}

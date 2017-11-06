@@ -11,7 +11,7 @@ const {
 } = require('./utils');
 
 // settings
-const settings = require('./settings.json');
+const settings = require('./settings.js');
 
 
 (run = () => {
