@@ -1,0 +1,29 @@
+{
+  "name": "instagram-login-phantomjs",
+  "version": "1.0.0",
+  "description": "Login to instagram with phantomjs",
+  "main": "phan.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiefsmurph/instagram-login-phantomjs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chiefsmurph/instagram-login-phantomjs/issues"
+  },
+  "homepage": "https://github.com/chiefsmurph/instagram-login-phantomjs#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "dotenv": "^4.0.0",
+    "fs": "0.0.1-security",
+    "node-horseman": "^3.2.0",
+    "phantomjs": "^2.1.7",
+    "spooky": "^0.2.5",
+    "webpage": "^0.3.0"
+  }
+}

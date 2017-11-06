@@ -1,0 +1,6 @@
+node_modules/*
+.DS_Store
+likes/*
+logs/*
+screenshots/*
+.env
