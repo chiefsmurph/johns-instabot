@@ -10,20 +10,16 @@ const login = auth => {
 
     horseman
       .open('https:/instagram.com/accounts/login/')
-      .then(function() {
-        console.log('opened login page');
-      })
+      .then(() => console.log('opened login page'))
       .wait(1000)
       .type('input[name="username"]', auth.username)
       .type('input[name="password"]', auth.password)
-      .then(function() {
-        console.log('finished typing now submitting!');
-      })
+      .then(() => console.log('finished typing now submitting!'))
       .click('button')
       .waitForNextPage()
       .screenshot('/screenshots/loggedin.png')
       .cookies()
-      .then(function(cookies) {
+      .then(cookies => {
 
         console.log('done logging in to instagram')
         horseman.close();

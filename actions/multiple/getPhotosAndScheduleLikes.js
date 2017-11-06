@@ -36,13 +36,11 @@ const getPhotosAndScheduleLikes = (tag, cookies) => {
     console.log('getting and liking for ' + tag);
 
     getRandomPhotosFromTag(tag, cookies, picUrls => {
-      async.forEachSeries(picUrls, function(url, cb) {
+      picUrls.forEach(url => {
         scheduleLikeInFuture(url, cookies);
-        cb();
-      }, () => {
-        console.log('done scheduling likes for ' + tag);
-        resolve();
       });
+      console.log('done scheduling likes for ' + tag);
+      resolve();
     });
 
 
