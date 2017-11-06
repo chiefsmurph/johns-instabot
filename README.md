@@ -1,6 +1,8 @@
 # johns-instabot
 Pwn Instagram with this Node.js bot
 
+### Usage
+
 Create a .env file
 
 example:
