@@ -8,52 +8,46 @@ const likePicture = require('../singles/likePicture');
 // utils
 const { randBetween, msToMin } = require('../../utils');
 
+// settings
+const settings = require('../../settings.json');
+
 // end imports
 
-const getPhotosAndLike = (tag, num, cookies) => {
+const scheduleLikeInFuture = (url, cookies) => {
+  const waitTime = randBetween(1000, 60000 * 18); // 1 sec - 18 min
+  setTimeout(() => {
+    likePicture(url, cookies);
+  }, waitTime);
+  console.log('scheduled like of ' + url + ' in...' + msToMin(waitTime) + 'min');
+};
+
+const getRandomPhotosFromTag = (tag, cookies, cb) => {
+  const num = randBetween(1, 3);
+  getPhotosForTag(tag, cookies)
+    .then(picUrls => {
+      picUrls = picUrls.splice(9, num);
+      cb(picUrls);
+    });
+};
+
+const getPhotosAndScheduleLikes = (tag, cookies) => {
   return new Promise((resolve, reject) => {
 
-    console.log('getting and liking for ' + tag + ' | num: ' + num);
+    console.log('getting and liking for ' + tag);
 
-    getPhotosForTag(tag, cookies)
-        .then(picUrls => {
-          picUrls = picUrls.splice(9, num);
-
-          async.forEachSeries(picUrls, function(url, cb) {
-
-            setTimeout(function() {
-
-              var waitTime = randBetween(1000, 60000 * 18);
-              setTimeout(function() {
-
-                likePicture(url, cookies);
-
-              }, waitTime);
-
-              console.log('scheduled like of ' + url + ' in...' + msToMin(waitTime) + 'min');
-
-              cb();
-            }, randBetween(1000, 3000) );
-
-          }, function() {
-
-            console.log('done scheduling likes for ' + tag);
-
-            var waitTime = randBetween(60000, 60000 * 3);
-            console.log('scheduling in the future: ' + msToMin(waitTime) + ' min' );
-
-            setTimeout(function() {
-              getPhotosAndLike(tag, randBetween(1, 3), cookies);
-            },  waitTime);  // 1 - 3 minutes
-
-          });
-
-
-
-        });
+    getRandomPhotosFromTag(tag, cookies, picUrls => {
+      async.forEachSeries(picUrls, function(url, cb) {
+        scheduleLikeInFuture(url, cookies);
+        cb();
+      }, () => {
+        console.log('done scheduling likes for ' + tag);
+        resolve();
+      });
+    });
 
 
   });
+
 };
 
-module.exports = getPhotosAndLike;
+module.exports = getPhotosAndScheduleLikes;

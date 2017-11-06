@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const getPhotosAndLike = require('./actions/multiple/getPhotosAndScheduleLikes');
+const getPhotosAndScheduleLikes = require('./actions/multiple/getPhotosAndScheduleLikes');
 const login = require('./actions/singles/login');
 
 const {
@@ -9,14 +9,21 @@ const {
 } = require('./utils');
 
 
-var startLiking = function(category, cookies) {
+const startLiking = (category, cookies) => {
 
-  getPhotosAndScheduleLikes(category, randBetween(1, 3), cookies );
+  (continuallyRun = cb => {
+    getPhotosAndScheduleLikes(category, cookies)
+      .then(() => {
+        const waitTime = randBetween(60000, 60000 * 3); // 1 - 3 min
+        setTimeout(continuallyRun, waitTime);  // 1 - 3 minutes
+        console.log('going to schedule more pic likes in: ' + msToMin(waitTime) + ' min' );
+      });
+  })();
 
 };
 
 
-var run = function() {
+(run = () => {
 
   console.log('starting');
 
@@ -30,7 +37,4 @@ var run = function() {
 
   });
 
-};
-
-
-run();
+})();

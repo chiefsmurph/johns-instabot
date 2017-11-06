@@ -28,6 +28,9 @@ const likePicture = (url, cookies) => {
           horseman.close();
           resolve();
 
+        })
+        .on('resourceError', function(err) {
+            console.log(err.message)
         });
 
       });
