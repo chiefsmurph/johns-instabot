@@ -1,5 +1,5 @@
-# instagram-login-phantomjs
-Login to instagram with phantomjs
+# johns-instabot
+Pwn Instagram with this Node.js bot
 
 Create a .env file
 
