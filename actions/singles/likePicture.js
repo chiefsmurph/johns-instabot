@@ -17,7 +17,8 @@ const likePicture = (url, cookies) => {
       .open(url)
       .wait(1000)
       // .screenshot('beforeclick.png')
-      .mouseEvent('doubleclick', 560, 400)
+      // .mouseEvent('doubleclick', 560, 400)
+      .click('article > div > section > a')
       .wait(3000)
       .screenshot('screenshots/likes/' + imgId +  '.png')
       .then(() => {
