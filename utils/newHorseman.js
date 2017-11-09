@@ -2,7 +2,8 @@ const Horseman = require("node-horseman");
 
 const newHorseman = () => {
   return new Horseman({
-    timeout: 8000
+    ignoreSSLErrors: true,
+    timeout: 60000
   })
     .viewport(1500,700);
     // .zoom(2);
