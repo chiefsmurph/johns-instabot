@@ -25,7 +25,7 @@ const settings = require('./settings.js');
   .then(cookies => {
 
       if (settings.likes && settings.likes.enabled) {
-        startLiking('live', cookies)
+        startLiking(settings.likes.tags, cookies)
       }
 
   });

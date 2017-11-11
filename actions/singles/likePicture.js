@@ -13,6 +13,12 @@ const likePicture = (url, cookies) => {
     executeHorseman(horseman => {
 
       horseman
+        .on('consoleMessage', function( msg ){
+          console.log('console', msg);
+        })
+        .on('resourceError',function(err)  {
+          console.log('resource', err);
+        })
         .cookies(cookies)
         .open(url)
         .wait(3000)
@@ -32,7 +38,8 @@ const likePicture = (url, cookies) => {
           });
 
 
-        });
+        })
+        .catch(e => console.error('likerror', e, url));
 
 
     });

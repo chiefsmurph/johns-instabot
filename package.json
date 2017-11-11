@@ -21,7 +21,7 @@
     "async": "^2.5.0",
     "dotenv": "^4.0.0",
     "fs": "0.0.1-security",
-    "node-horseman": "^3.2.0",
+    "node-horseman": "^3.3.0",
     "phantomjs": "^2.1.7",
     "spooky": "^0.2.5",
     "webpage": "^0.3.0"

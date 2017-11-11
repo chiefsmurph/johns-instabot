@@ -23,7 +23,8 @@ const getPhotosForTag = (tag, cookies) => {
           console.log('done getting photos for tag ' + tag);
           horseman.close();
           resolve(urls);
-        });
+        })
+        .catch(e => console.error('tagphotoserror', e, url));
     });
 
   });

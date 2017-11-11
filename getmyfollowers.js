@@ -17,7 +17,7 @@ const login = require('./actions/singles/login');
   .then(cookies => {
 
     getFollowersList('johnpatrickblaisemurphy', cookies)
-      .then(followers => console.log(followers));
+      .then(followers => console.log(followers, followers.length));
 
   });
 

@@ -11,9 +11,10 @@ const {
 const settings = require('../../settings.js');
 
 
-const startLiking = (category, cookies) => {
+const startLiking = (categories, cookies) => {
 
   (continuallyRun = cb => {
+    const category = categories[randBetween(0, categories.length - 1)];
     getPhotosAndScheduleLikes(category, cookies)
       .then(() => {
 
