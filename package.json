@@ -20,8 +20,6 @@
   "dependencies": {
     "async": "^2.5.0",
     "dotenv": "^4.0.0",
-    "fs": "0.0.1-security",
-    "fs-promise": "^2.0.3",
     "mz": "^2.7.0",
     "node-horseman": "^3.3.0",
     "phantomjs": "^2.1.7",
