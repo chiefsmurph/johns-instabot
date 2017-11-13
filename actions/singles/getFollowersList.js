@@ -8,10 +8,10 @@ const getFollowersList = async (username, cookies) => {
     console.log('url: ', url);
     return await horseman
           .on('consoleMessage', msg => {
-            console.log('console', msg);
+            // console.log('console', msg);
           })
           .on('resourceError', err => {
-            console.log('resource', err, url);
+            // console.log('resource', err, url);
           })
           .cookies(cookies)
           .open(url)
@@ -48,7 +48,11 @@ const getFollowersList = async (username, cookies) => {
             // only scroll once
             var beforeHeight = scrollDiv.scrollHeight;
             $(scrollDiv).scrollTop(beforeHeight);
-            setTimeout(done, 2000);
+            setTimeout(function() {
+              var nowHeight = scrollDiv.scrollHeight;
+              var hitEnd = (beforeHeight === nowHeight);
+              done(null, hitEnd);
+            }, 2000);
 
             // // scroll until bottom
             // var scrolls = [];
@@ -75,14 +79,13 @@ const getFollowersList = async (username, cookies) => {
     return await horseman.close();
   };
 
-  const getFollowers = async () => {
+  const getFollowers = async (hitEnd) => {
     const currentShowingFollowers = await retrieveFollowerUsers();
-    if (shouldStopScrolling(currentShowingFollowers)) {
-      await cleanUp();
+    if (shouldStopScrolling(currentShowingFollowers) || hitEnd) {
       return currentShowingFollowers;
     } else {
-      await scrollFollowersModal();
-      return await getFollowers();
+      const hitEnd = await scrollFollowersModal();
+      return await getFollowers(hitEnd);
     }
   };
 
@@ -108,6 +111,7 @@ const getFollowersList = async (username, cookies) => {
       followers = await getFollowersList(username, cookies, ++retrigTimes);
     }
   } finally {
+    await cleanUp();
     return followers;
   }
 

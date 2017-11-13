@@ -1,5 +1,6 @@
 // npm
 const async = require('async');
+const fs = require('mz/fs');
 
 // actions
 const getRecentPhotosForTag = require('../singles/getRecentPhotosForTag');
@@ -14,6 +15,8 @@ const settings = require('../../settings.js');
 // end imports
 
 
+const logLike = async (url) => await fs.appendFile('logs/likes.txt', url + '\n');
+
 const getPhotosAndScheduleLikes = async (tag, cookies) => {
 
   const getRandomPhotosFromTag = async () => {
@@ -24,8 +27,13 @@ const getPhotosAndScheduleLikes = async (tag, cookies) => {
   const scheduleLikeInFuture = (url) => {
     const rangeInMs = settings.likes.waitToLikeRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);
-    setTimeout(() => {
-      likePicture(url, cookies);
+    setTimeout(async () => {
+      try {
+        await likePicture(url, cookies);
+        await logLike(url);
+      } catch (e) {
+        console.error('likePicture error', e, 'though we shouldnt care because it was handled in likePicture');
+      }
     }, waitTime);
     console.log('scheduled like of ' + url + ' in...' + msToMin(waitTime) + 'min');
   };
@@ -34,7 +42,7 @@ const getPhotosAndScheduleLikes = async (tag, cookies) => {
   const randomRecentPhotos = await getRandomPhotosFromTag();
   randomRecentPhotos.forEach(scheduleLikeInFuture);
   return;
-  
+
 };
 
 module.exports = getPhotosAndScheduleLikes;

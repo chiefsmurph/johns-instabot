@@ -8,10 +8,10 @@ const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
     console.log('url: ', url);
     return await horseman
           .on('consoleMessage', msg => {
-            console.log('console', msg);
+            // console.log('console', msg);
           })
           .on('resourceError', err => {
-            console.log('resource', err, url);
+            // console.log('resource', err, url);
           })
           .cookies(cookies)
           .open(url);
@@ -37,7 +37,6 @@ const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
   try {
     await navigateToTagPage();
     recentPhotos = await retrieveRecentPhotos();
-    await cleanUp();
   } catch (e) {
     console.error(e, tag);
     if (retrigTimes < 3) {
@@ -46,6 +45,7 @@ const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
       recentPhotos = await getRecentPhotosForTag(tag, num, cookies, ++retrigTimes);
     }
   } finally {
+    await cleanUp();
     return recentPhotos;
   }
 

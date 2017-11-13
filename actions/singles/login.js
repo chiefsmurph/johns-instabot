@@ -12,6 +12,7 @@ const login = async (auth, retrigTimes = 0) => {
   };
 
   const typeAndSubmitCredentials = async () => {
+    // if (retrigTimes < 3) throw new Error("forced error");
     return await horseman
           .type('input[name="username"]', auth.username)
           .type('input[name="password"]', auth.password)
@@ -20,9 +21,9 @@ const login = async (auth, retrigTimes = 0) => {
           .waitForNextPage();
   };
 
-  const screenshot = async () => horseman.screenshot('/screenshots/loggedin.png');
-  const getCookies = async () => horseman.cookies();
-  const cleanUp = async () => horseman.close();
+  const screenshot = async () => await horseman.screenshot('/screenshots/loggedin.png');
+  const getCookies = async () => await horseman.cookies();
+  const cleanUp = async () => await horseman.close();
 
   // run
   const horseman = newHorseman();
@@ -33,14 +34,18 @@ const login = async (auth, retrigTimes = 0) => {
     await typeAndSubmitCredentials();
     await screenshot();
     responseCookies = await getCookies();
-    await cleanUp();
   } catch (e) {
     console.error(e);
     if (retrigTimes < 3) {
       console.log('error - retriggering login, ', retrigTimes);
-      responseCookies = await login(auth, ++retrigTimes);
+      try {
+        responseCookies = await login(auth, ++retrigTimes);
+      } catch (secondError) {
+        console.error('secondError', secondError);
+      }
     }
   } finally {
+    await cleanUp();
     return responseCookies;
   }
 
