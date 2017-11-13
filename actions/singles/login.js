@@ -36,7 +36,7 @@ const login = async (auth) => {
     await cleanUp();
   } catch (e) {
     console.error(e);
-    console.log('error retriggering login');
+    console.log('error - retriggering login');
     responseCookies = await login(auth);
   } finally {
     return responseCookies;

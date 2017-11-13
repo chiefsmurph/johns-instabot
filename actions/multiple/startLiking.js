@@ -7,10 +7,6 @@ const {
   randBetween
 } = require('../../utils');
 
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 // settings
 const settings = require('../../settings.js');
 

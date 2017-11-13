@@ -104,7 +104,7 @@ const getFollowersList = async (username, cookies) => {
     followers = await getFollowers();
   } catch (e) {
     console.error(e);
-    console.error('retriggering getFollowersList');
+    console.error('error - retriggering getFollowersList', username);
     followers = await getFollowersList(username, cookies);
   } finally {
     return followers;

@@ -1,4 +1,5 @@
 const newHorseman = require('../../utils/newHorseman');
+const timeoutPromise = require('../../utils/timeoutPromise');
 
 const getRecentPhotosForTag = async (tag, num, cookies) => {
 
@@ -36,10 +37,10 @@ const getRecentPhotosForTag = async (tag, num, cookies) => {
     await navigateToTagPage();
     recentPhotos = await retrieveRecentPhotos();
     await cleanUp();
-    return recentPhotos;
   } catch (e) {
     console.error(e);
-    console.log('error retriggering getRecentPhotosForTag');
+    console.log('error - retriggering getRecentPhotosForTag ', tag, ' in 2 seconds');
+    await timeoutPromise(2000);
     recentPhotos = await getRecentPhotosForTag(tag, num, cookies);
   } finally {
     return recentPhotos;
