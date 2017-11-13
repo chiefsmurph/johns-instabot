@@ -3,7 +3,7 @@ const fs = require('mz/fs');
 const newHorseman = require('../../utils/newHorseman');
 const timeoutPromise = require('../../utils/timeoutPromise');
 
-const likePicture = async (url, cookies) => {
+const likePicture = async (url, cookies, retrigTimes = 0) => {
 
   let has404d = false;
   const navigateToPicturePage = async () => {
@@ -48,11 +48,13 @@ const likePicture = async (url, cookies) => {
     await cleanUp();
     console.log('successfully liked ', url);
   } catch (e) {
-    console.error(e);
+    console.error(e, url);
     if (!has404d) {
-      console.log('error - retriggering like ', url, ' in 5 seconds');
-      await timeoutPromise(5000);
-      await likePicture(url, cookies);
+      if (retrigTimes < 3) {
+        console.log('error - retriggering like ', url, ' in 5 seconds', retrigTimes);
+        await timeoutPromise(5000);
+        await likePicture(url, cookies, ++retrigTimes);
+      }
     } else {
       console.error('not retriggering - 404', url);
     }

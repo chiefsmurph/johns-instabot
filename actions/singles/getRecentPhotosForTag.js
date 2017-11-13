@@ -1,7 +1,7 @@
 const newHorseman = require('../../utils/newHorseman');
 const timeoutPromise = require('../../utils/timeoutPromise');
 
-const getRecentPhotosForTag = async (tag, num, cookies) => {
+const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
 
   const navigateToTagPage = async () => {
     const url = `https://www.instagram.com/explore/tags/${tag}`;
@@ -39,9 +39,11 @@ const getRecentPhotosForTag = async (tag, num, cookies) => {
     await cleanUp();
   } catch (e) {
     console.error(e);
-    console.log('error - retriggering getRecentPhotosForTag ', tag, ' in 2 seconds');
-    await timeoutPromise(2000);
-    recentPhotos = await getRecentPhotosForTag(tag, num, cookies);
+    if (retrigTimes < 3) {
+      console.log('error - retriggering getRecentPhotosForTag ', tag, ' in 2 seconds', retrigTimes);
+      await timeoutPromise(2000);
+      recentPhotos = await getRecentPhotosForTag(tag, num, cookies, ++retrigTimes);
+    }
   } finally {
     return recentPhotos;
   }

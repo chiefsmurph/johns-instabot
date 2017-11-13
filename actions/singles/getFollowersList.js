@@ -1,4 +1,5 @@
 const newHorseman = require('../../utils/newHorseman');
+const maxFollowersAtATime = 200;
 
 const getFollowersList = async (username, cookies) => {
 
@@ -13,12 +14,12 @@ const getFollowersList = async (username, cookies) => {
             console.log('resource', err, url);
           })
           .cookies(cookies)
-          .open(url);
+          .open(url)
+          .wait(4000);
   };
 
   const openFollowersModal = async () => {
     return await horseman
-          .wait(4000)
           .click('article > header > section > ul > li:nth-child(2) > a')
           .wait(2000);
   };
@@ -76,22 +77,20 @@ const getFollowersList = async (username, cookies) => {
 
   const getFollowers = async () => {
     const currentShowingFollowers = await retrieveFollowerUsers();
-    if (alreadySeenOneOf(currentShowingFollowers)) {
+    if (shouldStopScrolling(currentShowingFollowers)) {
       await cleanUp();
       return currentShowingFollowers;
     } else {
-      console.log('nah');
       await scrollFollowersModal();
-      console.log('here');
       return await getFollowers();
     }
   };
 
   // logic
 
-  const alreadySeenOneOf = (followersArr => {
+  const shouldStopScrolling = (followersArr => {
     console.log('already seen?', followersArr);
-    return false;
+    return followersArr.length > maxFollowersAtATime;
   });
 
   // run
@@ -103,9 +102,11 @@ const getFollowersList = async (username, cookies) => {
     await openFollowersModal();
     followers = await getFollowers();
   } catch (e) {
-    console.error(e);
-    console.error('error - retriggering getFollowersList', username);
-    followers = await getFollowersList(username, cookies);
+    console.error(e, username);
+    if (retrigTimes < 3) {
+      console.error('error - retriggering getFollowersList', username);
+      followers = await getFollowersList(username, cookies, ++retrigTimes);
+    }
   } finally {
     return followers;
   }

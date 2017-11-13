@@ -2,7 +2,7 @@
 const newHorseman = require('../../utils/newHorseman');
 
 
-const login = async (auth) => {
+const login = async (auth, retrigTimes = 0) => {
 
   const navigateToLoginPage = async () => {
     return await horseman
@@ -36,8 +36,10 @@ const login = async (auth) => {
     await cleanUp();
   } catch (e) {
     console.error(e);
-    console.log('error - retriggering login');
-    responseCookies = await login(auth);
+    if (retrigTimes < 3) {
+      console.log('error - retriggering login, ', retrigTimes);
+      responseCookies = await login(auth, ++retrigTimes);
+    }
   } finally {
     return responseCookies;
   }
