@@ -7,40 +7,42 @@ const {
   randBetween
 } = require('../../utils');
 
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // settings
 const settings = require('../../settings.js');
 
 
-const startLiking = (categories, cookies) => {
+const startLiking = async (categories, cookies) => {
 
-  (continuallyRun = cb => {
-    const category = categories[randBetween(0, categories.length - 1)];
-    getPhotosAndScheduleLikes(category, cookies)
-      .then(() => {
+  return (async function continuallyRun() {
 
-        const { maxPerHour } = settings.likes;
-        const numPerCall = 2;
-        const neededCallsPerHour = maxPerHour / numPerCall;
-        const msInHr = 60000 * 60;
-        const targetWaitTimeInMs = msInHr / neededCallsPerHour;
+    const randCategory = categories[randBetween(0, categories.length - 1)];
+    await getPhotosAndScheduleLikes(randCategory, cookies);
 
-        const randLimits = {
-          low: targetWaitTimeInMs - (targetWaitTimeInMs / 3),
-          high: targetWaitTimeInMs + (targetWaitTimeInMs / 3)
-        };
+    // calculate wait time
+    const { targetPerHour } = settings.likes;
+    const numPerCall = 2;
+    const neededCallsPerHour = targetPerHour / numPerCall;
+    const msInHr = 60000 * 60;
+    const targetWaitTimeInMs = msInHr / neededCallsPerHour;
 
-        const waitTime = randBetween(randLimits.low, randLimits.high); // 1 - 3 min
+    const randLimits = {
+      low: targetWaitTimeInMs - (targetWaitTimeInMs / 3),
+      high: targetWaitTimeInMs + (targetWaitTimeInMs / 3)
+    };
 
-        setTimeout(continuallyRun, waitTime);  // 1 - 3 minutes
-        console.log('going to schedule more pic likes in: ' + msToMin(waitTime) + ' min' );
+    const waitTime = randBetween(randLimits.low, randLimits.high); // 1 - 3 min
 
+    // schedule another round
+    console.log('going to schedule more pic likes in: ' + msToMin(waitTime) + ' min' );
+    return setTimeout(continuallyRun, waitTime);    // 1 - 3 minutes
 
-      })
-      .catch(e => {
-        console.error('error', e);
-      });
   })();
 
 };
+
 
 module.exports = startLiking;
