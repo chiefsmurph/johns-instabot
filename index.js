@@ -23,7 +23,7 @@ const settings = require('./settings.js');
     password: process.env.INSTA_PASSWORD
   })
   .then(cookies => {
-
+      console.log(cookies, 'cookies');
       if (settings.likes && settings.likes.enabled) {
         startLiking(settings.likes.tags, cookies)
       }

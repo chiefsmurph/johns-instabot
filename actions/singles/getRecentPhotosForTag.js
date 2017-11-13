@@ -31,6 +31,7 @@ const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
   };
 
   // run
+  console.log('getting ', num, ' recent photos for tag: ' + tag);
   const horseman = newHorseman();
   let recentPhotos;
   try {
@@ -38,7 +39,7 @@ const getRecentPhotosForTag = async (tag, num, cookies, retrigTimes = 0) => {
     recentPhotos = await retrieveRecentPhotos();
     await cleanUp();
   } catch (e) {
-    console.error(e);
+    console.error(e, tag);
     if (retrigTimes < 3) {
       console.log('error - retriggering getRecentPhotosForTag ', tag, ' in 2 seconds', retrigTimes);
       await timeoutPromise(2000);

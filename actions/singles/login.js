@@ -1,6 +1,6 @@
 // auth = {username: 'abc', password: 'def'}
 const newHorseman = require('../../utils/newHorseman');
-
+const timeoutPromise = require('../../utils/timeoutPromise');
 
 const login = async (auth, retrigTimes = 0) => {
 
