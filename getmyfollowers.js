@@ -4,21 +4,20 @@ require('dotenv').config()
 const getFollowersList = require('./actions/singles/getFollowersList');
 const login = require('./actions/singles/login');
 
+const puppeteer = require('puppeteer');
 
-
-(run = () => {
+(run = async () => {
 
   console.log('starting');
 
-  login({
+  const browser = await puppeteer.launch({ headless: false });
+
+  const cookies = await login({
     username: process.env.INSTA_USERNAME,
     password: process.env.INSTA_PASSWORD
-  })
-  .then(cookies => {
+  }, browser);
 
-    getFollowersList('johnpatrickblaisemurphy', cookies)
-      .then(followers => console.log(followers, followers.length));
-
-  });
+  const followers = await getFollowersList('johnpatrickblaisemurphy', cookies, browser);
+  console.log(followers, followers.length);
 
 })();

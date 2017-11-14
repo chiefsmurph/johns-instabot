@@ -11,12 +11,12 @@ const {
 const settings = require('../../settings.js');
 
 
-const startLiking = async (categories, cookies) => {
+const startLiking = async (categories, cookies, browser) => {
 
   return (async function continuallyRun() {
 
     const randCategory = categories[randBetween(0, categories.length - 1)];
-    await getPhotosAndScheduleLikes(randCategory, cookies);
+    await getPhotosAndScheduleLikes(randCategory, cookies, browser);
 
     // calculate wait time
     const { targetPerHour } = settings.likes;

@@ -1,7 +1,6 @@
 const utils = [
   'randBetween',
-  'msToMin',
-  'newHorseman'
+  'msToMin'
 ];
 
 module.exports = utils.reduce((acc, val) => {

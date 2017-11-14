@@ -1,82 +1,56 @@
-const newHorseman = require('../../utils/newHorseman');
 const maxFollowersAtATime = 200;
 
-const getFollowersList = async (username, cookies) => {
+const getFollowersList = async (username, cookies, browser) => {
+
+  let page = await browser.newPage();
 
   const navigateToUserPage = async () => {
     const url = `https://www.instagram.com/${username}`;
     console.log('url: ', url);
-    return await horseman
-          .on('consoleMessage', msg => {
-            // console.log('console', msg);
-          })
-          .on('resourceError', err => {
-            // console.log('resource', err, url);
-          })
-          .cookies(cookies)
-          .open(url)
-          .wait(4000);
+    await page.setCookie(...cookies);
+    await page.goto(url);
   };
 
   const openFollowersModal = async () => {
-    return await horseman
-          .click('article > header > section > ul > li:nth-child(2) > a')
-          .wait(2000);
+    await page.click('article > header > section > ul > li:nth-child(2) > a');
+    await page.waitFor(2000);
   };
 
   const retrieveFollowerUsers = async () => {
-    return await horseman
-          .evaluate(function() {
-            var allLis = [].slice.call(document.querySelectorAll('[role="dialog"] ul li'));
-            return allLis.map(function(li) {
-              var $li = $(li);
-              return {
-                username: $(li).find('div > div > div > div:nth-child(1)').text(),
-                fullname: $(li).find('div > div > div > div:nth-child(2)').text()
-              };
-            });
-          });
+    return await page.evaluate(function() {
+      var allLis = [].slice.call(document.querySelectorAll('[role="dialog"] ul li'));
+      return allLis.map(function(li) {
+        return {
+          username: li.querySelector('div > div > div > div:nth-child(1)').textContent,
+          fullname: li.querySelector('div > div > div > div:nth-child(2)').textContent
+        };
+      });
+    });
   };
 
   const scrollFollowersModal = async () => {
-    return await horseman
-          .wait(6000)
-          .evaluate(function(done) {
+    await page.waitFor(3000)
+    await page.evaluate(function(done) {
 
-            var scrollDiv = document.querySelector('[role="dialog"] > div > div > div:nth-child(2)');
+      return new Promise(function(resolve, reject) {
+        var scrollDiv = document.querySelector('[role="dialog"] > div > div > div:nth-child(2)');
 
-            // only scroll once
-            var beforeHeight = scrollDiv.scrollHeight;
-            $(scrollDiv).scrollTop(beforeHeight);
-            setTimeout(function() {
-              var nowHeight = scrollDiv.scrollHeight;
-              var hitEnd = (beforeHeight === nowHeight);
-              done(null, hitEnd);
-            }, 2000);
+        // only scroll once
+        var beforeHeight = scrollDiv.scrollHeight;
+        scrollDiv.scrollTop = beforeHeight;
+        setTimeout(function() {
+          var nowHeight = scrollDiv.scrollHeight;
+          var hitEnd = (beforeHeight === nowHeight);
+          resolve(null, hitEnd);
+        }, 2000);
+      });
 
-            // // scroll until bottom
-            // var scrolls = [];
-            //
-            // (function scrollIt() {
-            //   var beforeHeight = scrollDiv.scrollHeight;
-            //   scrolls.push(beforeHeight);
-            //   setTimeout(function() {
-            //     var nowHeight = scrollDiv.scrollHeight;
-            //     if (beforeHeight === nowHeight) {
-            //       done(null, scrolls);
-            //     } else {
-            //       scrollIt();
-            //     }
-            //   }, 2000);
-            //   $(scrollDiv).scrollTop(beforeHeight);
-            // })();
-
-          });
+    });
   };
 
   const cleanUp = async () => {
     console.log('done getting followers of ' + username);
-    return await horseman.close();
+    await page.close();
   };
 
   const getFollowers = async (hitEnd) => {
@@ -97,7 +71,6 @@ const getFollowersList = async (username, cookies) => {
   });
 
   // run
-  const horseman = newHorseman();
   let followers;
   try {
     console.log('getting followers of ', username);
@@ -108,7 +81,7 @@ const getFollowersList = async (username, cookies) => {
     console.error(e, username);
     if (retrigTimes < 3) {
       console.error('error - retriggering getFollowersList', username);
-      followers = await getFollowersList(username, cookies, ++retrigTimes);
+      followers = await getFollowersList(username, cookies, browser, ++retrigTimes);
     }
   } finally {
     await cleanUp();

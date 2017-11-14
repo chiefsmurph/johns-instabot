@@ -3,7 +3,7 @@ module.exports = {
       enabled: true,              // required
       tags: ['hipster', 'indie'], // required
       targetPerHour: 60,             // target number of pic likes per hour
-      waitToLikeRange: [0, 1]    // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      waitToLikeRange: [0, 30]    // a random amount of time between these two lengths of time in minutes to wait before liking the pic
   },
   comments: null,
   follows: {
