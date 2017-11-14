@@ -17,11 +17,11 @@ const settings = require('../../settings.js');
 
 const logLike = async (url) => await fs.appendFile('logs/likes.txt', url + '\n');
 
-const getPhotosAndScheduleLikes = async (tag, cookies) => {
+const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
   const getRandomPhotosFromTag = async () => {
     const num = randBetween(1, 3);
-    return await getRecentPhotosForTag(tag, num, cookies);
+    return await getRecentPhotosForTag(tag, num, cookies, browser);
   };
 
   const scheduleLikeInFuture = (url) => {
@@ -29,7 +29,7 @@ const getPhotosAndScheduleLikes = async (tag, cookies) => {
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
       try {
-        await likePicture(url, cookies);
+        await likePicture(url, cookies, browser);
         await logLike(url);
       } catch (e) {
         console.error('likePicture error', e, 'though we shouldnt care because it was handled in likePicture');

@@ -23,6 +23,7 @@
     "mz": "^2.7.0",
     "node-horseman": "^3.2.0",
     "phantomjs": "^2.1.7",
+    "puppeteer": "^0.13.0",
     "spooky": "^0.2.5",
     "webpage": "^0.3.0"
   }

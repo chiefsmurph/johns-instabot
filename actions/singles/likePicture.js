@@ -1,44 +1,35 @@
 const newHorseman = require('../../utils/newHorseman');
 const timeoutPromise = require('../../utils/timeoutPromise');
 
-const likePicture = async (url, cookies, retrigTimes = 0) => {
+const likePicture = async (url, cookies, browser, retrigTimes = 0) => {
 
+  let page = await browser.newPage();
   let has404d = false;
+
   const navigateToPicturePage = async () => {
-    return await horseman
-          .on('consoleMessage', msg => {
-            // console.log('console', msg);
-          })
-          .on('resourceError', err => {
-            // console.log('resource', err, url);
-            if (err.status === 404) has404d = true;
-          })
-          .cookies(cookies)
-          .open(url)
-          .wait(3000);
+    await page.setCookie(...cookies);
+    await page.goto(url);
+    // todo: check for 404
   };
 
-  const likePost = async () => {
-    return await horseman
-          .click('article > div > section > a')
-          .wait(3000)
+  const clickLike = async () => {
+    await page.click('article > div > section > a');
+    await page.waitFor(3000);
   };
 
   const screenshot = async () => {
     let imgId = url.split('/');
     imgId = imgId[imgId.length - 2];
-    return await horseman
-          .screenshot('screenshots/likes/' + imgId +  '.png');
+    await page.screenshot({ path: 'screenshots/likes/' + imgId +  '.png' });
   };
 
-  const cleanUp = async () => await horseman.close();
+  const cleanUp = async () => await page.close();
 
   // run
-  const horseman = newHorseman();
   try {
     console.log('liking ', url);
     await navigateToPicturePage();
-    await likePost();
+    await clickLike();
     await screenshot();
     console.log('successfully liked ', url);
     if (retrigTimes) {
@@ -53,7 +44,7 @@ const likePicture = async (url, cookies, retrigTimes = 0) => {
       console.log('error - retriggering like ', url, ' in 5 seconds', retrigTimes);
       await timeoutPromise(5000);
       try {
-        await likePicture(url, cookies, ++retrigTimes);
+        await likePicture(url, cookies, browser, ++retrigTimes);
       } catch (secondError) {
         console.error('secondError', secondError);
       }

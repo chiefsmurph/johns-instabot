@@ -1,7 +1,7 @@
 const newHorseman = require('../../utils/newHorseman');
 const maxFollowersAtATime = 200;
 
-const getFollowersList = async (username, cookies) => {
+const getFollowersList = async (username, cookies, browser) => {
 
   const navigateToUserPage = async () => {
     const url = `https://www.instagram.com/${username}`;
