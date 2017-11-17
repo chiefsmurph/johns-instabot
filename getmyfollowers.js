@@ -10,7 +10,7 @@ const puppeteer = require('puppeteer');
 
   console.log('starting');
 
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,

@@ -30,7 +30,7 @@ const getFollowersList = async (username, cookies, browser) => {
 
   const scrollFollowersModal = async () => {
     await page.waitFor(3000)
-    await page.evaluate(function(done) {
+    return await page.evaluate(function () {
 
       return new Promise(function(resolve, reject) {
         var scrollDiv = document.querySelector('[role="dialog"] > div > div > div:nth-child(2)');
@@ -41,7 +41,7 @@ const getFollowersList = async (username, cookies, browser) => {
         setTimeout(function() {
           var nowHeight = scrollDiv.scrollHeight;
           var hitEnd = (beforeHeight === nowHeight);
-          resolve(null, hitEnd);
+          resolve(hitEnd);
         }, 2000);
       });
 
