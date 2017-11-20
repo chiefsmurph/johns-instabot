@@ -6,6 +6,10 @@ const fs = require('mz/fs');
 const getRecentPhotosForTag = require('../singles/getRecentPhotosForTag');
 const likePicture = require('../singles/likePicture');
 
+// lib
+const Document = require('../../lib/johns-json-db/document');
+const LikeLogs = new Document('logs/likes.json');
+
 // utils
 const { randBetween, msToMin } = require('../../utils');
 
@@ -15,7 +19,10 @@ const settings = require('../../settings.js');
 // end imports
 
 
-const logLike = async (url) => await fs.appendFile('logs/likes.txt', url + '\n');
+const logLike = async (url) => {
+  await LikeLogs.pushToArray('likes', url);
+  await fs.appendFile('logs/likes.txt', url + '\n');
+};
 
 const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 

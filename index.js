@@ -20,11 +20,15 @@ const {
 // settings
 const settings = require('./settings.js');
 
+const Collection = require('./lib/johns-json-db/collection');
+const Handles = new Collection('handles', './logs');
+
 
 (run = async () => {
 
-  console.log('starting');
 
+  console.log('starting');
+  await Handles.init();
 
   try {
 
