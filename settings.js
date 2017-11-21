@@ -8,12 +8,16 @@ module.exports = {
       enabled: true,                // required
       tags: ['hipster', 'indie'],   // required
       targetPerHour: 60,            // target number of pic likes per hour
-      waitToLikeRange: [0, 0]      // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      waitRange: [0, 30]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic
   },
   comments: null,
   follows: {
       enabled: true,
       tags: ['hipster', 'indie'],
       targetPerDay: 100,
+      waitRange: [0, 60 * 6],
+      // waitRange: [0, 0.4],
+      unfollowAfterDays: 1,
+      followToLikeRatio: 0.8
   }
 };

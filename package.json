@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/chiefsmurph/instagram-login-phantomjs#readme",
   "dependencies": {
-    "async": "^2.5.0",
     "dotenv": "^4.0.0",
     "mz": "^2.7.0",
     "puppeteer": "^0.13.0"

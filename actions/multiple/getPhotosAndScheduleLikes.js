@@ -1,10 +1,10 @@
 // npm
-const async = require('async');
 const fs = require('mz/fs');
 
 // actions
 const getRecentPhotosForTag = require('../singles/getRecentPhotosForTag');
 const likePicture = require('../singles/likePicture');
+const scheduleFollow = require('./scheduleFollow');
 
 // lib
 const Document = require('../../lib/johns-json-db/document');
@@ -24,7 +24,7 @@ const settings = require('../../settings.js');
 const logLike = async (username, likeData) => {
   await LikeLogs.pushToArray('likes', likeData.url);
   await fs.appendFile('logs/likes.txt', likeData.url + '\n');
-  await handleManager.mergeAndSave(username, {
+  return await handleManager.mergeAndSave(username, {
     postsLiked: [likeData]
   }, true);
 };
@@ -32,12 +32,12 @@ const logLike = async (username, likeData) => {
 const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
   const getRandomPhotosFromTag = async () => {
-    const num = randBetween(1, 1); // 1 3
+    const num = randBetween(1, 3); // 1 3
     return await getRecentPhotosForTag(tag, num, cookies, browser);
   };
 
   const scheduleLikeInFuture = (url) => {
-    const rangeInMs = settings.likes.waitToLikeRange.map(min => min * 1000 * 60);
+    const rangeInMs = settings.likes.waitRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
       try {
@@ -49,7 +49,13 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
           waittime: waitTime
         }
         console.log(username, likeData);
-        await logLike(username, likeData);
+        const userData = await logLike(username, likeData);
+        if (settings.follows && settings.follows.enabled) {
+          if (!userData.neverfollow && Math.random() < settings.follows.followToLikeRatio) {
+            console.log('scheduling follow of ', username);
+            scheduleFollow(username, cookies, browser);
+          }
+        }
       } catch (e) {
         console.error('likePicture error', e, 'though we shouldnt care because it was handled in likePicture');
       }
