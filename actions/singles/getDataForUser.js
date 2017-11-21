@@ -1,8 +1,23 @@
+// formatting
+
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+const convertStringToNum = numberString => {
+  if (!numberString) return '';
+  if (numberString.indexOf('k') !== -1) {
+    numberString = numberString.replaceAll('k', '');
+    var numDecimalDigits = (numberString.indexOf('.') !== -1) ? numberString.length - numberString.indexOf('.') - 1 : 0;
+    var numZerosNeeded = 3 - numDecimalDigits;
+    numberString = numberString.split('.').join('') + Array(numZerosNeeded + 1).join('0');
+  }
+  numberString = Number(numberString.replaceAll(",", ""));
+  return numberString;
+};
+
+// the meat
 const getDataForUser = async (username, cookies, browser) => {
 
   let page = await browser.newPage();
@@ -15,14 +30,19 @@ const getDataForUser = async (username, cookies, browser) => {
   };
 
   const retrieveDataUsers = async () => {
-    return await page.evaluate(function() {
-      return {
-        fullname: document.querySelector('article > header > section > div:nth-child(3) > h1').innerText,
-        numposts: document.querySelector('article > header > section > ul > li > span > span').innerText,
-        numfollowers: document.querySelector('article > header > section > ul > li:nth-child(2) > a > span').innerText,
-        numfollowings: document.querySelector('article > header > section > ul > li:nth-child(3) > a > span').innerText
-      };
-    });
+    const getInnerText = async selector => {
+      try {
+        return await page.evaluate((sel) => document.querySelector(sel).innerText, selector);
+      } catch (e) {
+        return null
+      }
+    };
+    return {
+      numposts: await getInnerText('article > header > section > ul > li > span > span'),
+      numfollowers: await getInnerText('article > header > section > ul > li:nth-child(2) > a > span'),
+      numfollowings: await getInnerText('article > header > section > ul > li:nth-child(3) > a > span'),
+      fullname: await getInnerText('article > header > section > div:nth-child(3) > h1')
+    };
   };
 
   const cleanUp = async () => {
@@ -37,7 +57,7 @@ const getDataForUser = async (username, cookies, browser) => {
     await navigateToUserPage();
     data = await retrieveDataUsers();
     ['numposts', 'numfollowers', 'numfollowings'].forEach(key => {
-      data[key] = Number(data[key].replaceAll("k", ",000").replaceAll(",", ""));
+      data[key] = convertStringToNum(data[key]);
     });
   } catch (e) {
     console.error(e, username);

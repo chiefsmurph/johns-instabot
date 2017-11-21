@@ -66,7 +66,7 @@ const getFollowersList = async (username, cookies, browser) => {
   // logic
 
   const shouldStopScrolling = (followersArr => {
-    console.log('already seen?', followersArr);
+    console.log('currently looking at', followersArr.length, 'followers');
     return followersArr.length > maxFollowersAtATime;
   });
 
@@ -85,7 +85,7 @@ const getFollowersList = async (username, cookies, browser) => {
     }
   } finally {
     await cleanUp();
-    return followers;
+    return followers.map(obj => obj.username.trim());
   }
 
 
