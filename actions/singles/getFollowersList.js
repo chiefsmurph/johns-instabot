@@ -21,8 +21,8 @@ const getFollowersList = async (username, cookies, browser) => {
       var allLis = [].slice.call(document.querySelectorAll('[role="dialog"] ul li'));
       return allLis.map(function(li) {
         return {
-          username: li.querySelector('div > div > div > div:nth-child(1)').textContent,
-          fullname: li.querySelector('div > div > div > div:nth-child(2)').textContent
+          username: li.querySelector('div > div > div > div:nth-child(1)').innerText,
+          fullname: li.querySelector('div > div > div > div:nth-child(2)').innerText
         };
       });
     });

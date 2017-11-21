@@ -18,6 +18,10 @@ const likePicture = async (url, cookies, browser, retrigTimes = 0) => {
     await page.waitFor(3000);
   };
 
+  const getUsername = async() => {
+    return await page.evaluate(() => document.querySelector('article > header > div > div > div > a').innerText);
+  };
+
   const screenshot = async () => {
     let imgId = url.split('/');
     imgId = imgId[imgId.length - 2];
@@ -34,11 +38,13 @@ const likePicture = async (url, cookies, browser, retrigTimes = 0) => {
       return console.log('404 picture has been deleated - ', url);
     }
     await clickLike();
+    const username = await getUsername();
     await screenshot();
     console.log('successfully liked ', url);
     if (retrigTimes) {
       console.log('fixed a problem after retrig', url);
     }
+    return { username };
   } catch (e) {
     if (has404d) {
       return console.error('not retriggering - 404', url);

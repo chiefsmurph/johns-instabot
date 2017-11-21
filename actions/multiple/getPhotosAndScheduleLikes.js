@@ -10,6 +10,8 @@ const likePicture = require('../singles/likePicture');
 const Document = require('../../lib/johns-json-db/document');
 const LikeLogs = new Document('logs/likes.json');
 
+const handleManager = require('../../db/handleManager');
+
 // utils
 const { randBetween, msToMin } = require('../../utils');
 
@@ -19,15 +21,18 @@ const settings = require('../../settings.js');
 // end imports
 
 
-const logLike = async (url) => {
-  await LikeLogs.pushToArray('likes', url);
-  await fs.appendFile('logs/likes.txt', url + '\n');
+const logLike = async (username, likeData) => {
+  await LikeLogs.pushToArray('likes', likeData.url);
+  await fs.appendFile('logs/likes.txt', likeData.url + '\n');
+  await handleManager.mergeAndSave(username, {
+    postsLiked: [likeData]
+  }, true);
 };
 
 const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
   const getRandomPhotosFromTag = async () => {
-    const num = randBetween(1, 3);
+    const num = randBetween(1, 1); // 1 3
     return await getRecentPhotosForTag(tag, num, cookies, browser);
   };
 
@@ -36,8 +41,15 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
       try {
-        await likePicture(url, cookies, browser);
-        await logLike(url);
+        const { username } = await likePicture(url, cookies, browser);
+        console.log('username', username);
+        const likeData = {
+          url,
+          relatedtag: tag,
+          waittime: waitTime
+        }
+        console.log(username, likeData);
+        await logLike(username, likeData);
       } catch (e) {
         console.error('likePicture error', e, 'though we shouldnt care because it was handled in likePicture');
       }

@@ -17,18 +17,16 @@ const {
   randBetween
 } = require('./utils');
 
+const handleManager = require('./db/handleManager');
+
 // settings
 const settings = require('./settings.js');
-
-const Collection = require('./lib/johns-json-db/collection');
-const Handles = new Collection('handles', './logs');
 
 
 (run = async () => {
 
 
   console.log('starting');
-  await Handles.init();
 
   try {
 
@@ -40,6 +38,10 @@ const Handles = new Collection('handles', './logs');
     }, browser);
 
     console.log(cookies, 'cookies');
+    handleManager.setPuppeteerEnv({
+      browser,
+      cookies
+    });
 
     if (settings.likes && settings.likes.enabled) {
       startLiking(settings.likes.tags, cookies, browser);

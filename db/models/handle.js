@@ -10,7 +10,8 @@ var handleSchema = new Schema({
     fullname: String,
     // in depth stats
     numposts: Number,
-    numfollowers: Number
+    numfollowers: Number,
+    numfollowings: Number,
     // result of actions
     postlikes: [{
         url: String,
