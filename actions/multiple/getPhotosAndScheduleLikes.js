@@ -10,7 +10,9 @@ const scheduleFollow = require('./scheduleFollow');
 const Document = require('../../lib/johns-json-db/document');
 const LikeLogs = new Document('logs/likes.json');
 
-const handleManager = require('../../db/handleManager');
+// modules
+const handleManager = require('../../modules/handleManager');
+const queueManager = require('../../modules/queueManager');
 
 // utils
 const { randBetween, msToMin } = require('../../utils');
@@ -34,11 +36,6 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
   await handleManager.init();
 
-  const getRandomPhotosFromTag = async () => {
-    const num = randBetween(1, 3); // 1 3
-    return await getRecentPhotosForTag(tag, num, cookies, browser);
-  };
-
   const scheduleLikeInFuture = (url) => {
     if (handleManager.alreadyLiked(url)) {
       throw new Error('already liked this post', url);
@@ -46,34 +43,48 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
     const rangeInMs = settings.likes.waitRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);
+
     setTimeout(async () => {
       try {
         const { username } = await likePicture(url, cookies, browser);
+        queueManager.removeLike(url);
         console.log('username', username);
         const likeData = {
           url,
           relatedtag: tag,
-          waittime: waitTime,
+          waittime: msToMin(waitTime),
           date: getDateFormatted()
         };
         console.log(username, likeData);
         const userData = await logLike(username, likeData);
         if (settings.follows && settings.follows.enabled) {
           if (!userData.neverfollow && Math.random() < settings.follows.followToLikeRatio) {
-            console.log('scheduling follow of ', username);
-            scheduleFollow(username, cookies, browser);
+            if (!queueManager.followInQueue(username)) {
+              console.log('scheduling follow of ', username);
+              scheduleFollow(username, cookies, browser);
+            }
           }
         }
       } catch (e) {
         console.error('likePicture error', e, 'though we shouldnt care because it was handled in likePicture');
       }
     }, waitTime);
+
     console.log('scheduled like of ' + url + ' in...' + msToMin(waitTime) + 'min');
+    queueManager.addLike(url);
   };
 
   // run
-  const randomRecentPhotos = await getRandomPhotosFromTag();
-  randomRecentPhotos.forEach(scheduleLikeInFuture);
+  const randomRecentPhotos = await getRecentPhotosForTag(tag, cookies, browser);
+  const num = randBetween(1, 3); // 1 3
+  const photosOfInterest = randomRecentPhotos
+    .filter(url => !handleManager.alreadyLiked(url))
+    .filter(url => !queueManager.likeInQueue(url));
+  const aFewRands = photosOfInterest
+    .sort(() => Math.random() > Math.random())
+    .splice(0, num);
+
+  aFewRands.forEach(scheduleLikeInFuture);
   return;
 
 };

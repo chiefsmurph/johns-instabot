@@ -5,8 +5,8 @@ require('dotenv').config()
 // check for unfollows
 
 // db
-const statManager = require('../../db/statManager');
-const handleManager = require('../../db/handleManager');
+const statManager = require('../../modules/statManager');
+const handleManager = require('../../modules/handleManager');
 // actions
 const getFollowersList = require('../singles/getFollowersList');
 // utils

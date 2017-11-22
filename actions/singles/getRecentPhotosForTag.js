@@ -1,7 +1,7 @@
 const timeoutPromise = require('../../utils/timeoutPromise');
-const handleManager = require('../../db/handleManager');
+const handleManager = require('../../modules/handleManager');
 
-const getRecentPhotosForTag = async (tag, num, cookies, browser, retrigTimes = 0) => {
+const getRecentPhotosForTag = async (tag, cookies, browser, retrigTimes = 0) => {
 
   await handleManager.init();
   const page = await browser.newPage();
@@ -13,16 +13,24 @@ const getRecentPhotosForTag = async (tag, num, cookies, browser, retrigTimes = 0
   };
 
   const retrieveRecentPhotos = async () => {
-    let picUrls = await page.evaluate(function() {
-        return [].slice.call(document.querySelectorAll('a')).map(function(a) { return a.href });
+    await page.evaluate(_ => {
+      window.scrollTo(0, document.body.scrollHeight);
     });
+    await page.waitFor(3000);
+    let picUrls = await page.evaluate(function() {
+        return [].slice.call(document.querySelectorAll('section > main > article > div:nth-child(4) a')).map(function(a) { return a.href });
+    });
+    await page.screenshot({ path: 'screenshots/relatedpng.png' });
+
+    picUrls = picUrls.splice(9);
     const beforeLength = picUrls.length;
+    console.log('beforeLength', beforeLength);
     picUrls = picUrls.filter(url => !handleManager.alreadyLiked(url));
     const afterLength = picUrls.length;
     if (beforeLength !== afterLength) {
       console.log('found ' + (beforeLength - afterLength) + ' pictures that were already liked in this tag retreival');
     }
-    return picUrls.splice(9, num);
+    return picUrls;
   };
 
   const cleanUp = async () => {
@@ -31,7 +39,7 @@ const getRecentPhotosForTag = async (tag, num, cookies, browser, retrigTimes = 0
   };
 
   // run
-  console.log('getting ', num, ' recent photos for tag: ' + tag);
+  console.log('getting recent photos for tag: ' + tag);
   let recentPhotos;
   try {
     await navigateToTagPage();
@@ -41,7 +49,7 @@ const getRecentPhotosForTag = async (tag, num, cookies, browser, retrigTimes = 0
     if (retrigTimes < 3) {
       console.log('error - retriggering getRecentPhotosForTag ', tag, ' in 2 seconds', retrigTimes);
       await timeoutPromise(2000);
-      recentPhotos = await getRecentPhotosForTag(tag, num, cookies, browser, ++retrigTimes);
+      recentPhotos = await getRecentPhotosForTag(tag, cookies, browser, ++retrigTimes);
     }
   } finally {
     await cleanUp();

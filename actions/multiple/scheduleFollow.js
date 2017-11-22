@@ -1,8 +1,9 @@
 // utils
 const { randBetween, msToMin } = require('../../utils');
 const getDateFormatted = require('../../utils/getDateFormatted');
-// db
-const handleManager = require('../../db/handleManager');
+// modules
+const handleManager = require('../../modules/handleManager');
+const queueManager = require('../../modules/queueManager');
 // settings
 const settings = require('../../settings.js');
 // actions
@@ -21,12 +22,14 @@ const scheduleFollow = (username, cookies, browser) => {
     setTimeout(async () => {
       try {
         await followUser(username, cookies, browser);
+        queueManager.removeFollow(username);
         await logFollow(username);
       } catch (e) {
         console.error('followUser error', e, 'though we shouldnt care because it was handled in followUser');
       }
     }, waitTime);
     console.log('scheduled follow of ' + username + ' in...' + msToMin(waitTime) + 'min');
+    queueManager.addFollow(username);
 };
 
 module.exports = scheduleFollow;

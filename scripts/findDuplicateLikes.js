@@ -2,7 +2,7 @@
 (async () => {
 
 
-  const handleManager = await require('../db/handleManager').init();
+  const handleManager = await require('../modules/handleManager').init();
   console.log(handleManager);
 
   const yourFollowers = handleManager.filterHandles(handleObj => {

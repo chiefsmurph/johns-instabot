@@ -1,11 +1,11 @@
 require('dotenv').config()
 
 
-const dailyCron = require('./actions/crons/daily');
-const login = require('./actions/singles/login');
+const dailyCron = require('../actions/crons/daily');
+const login = require('../actions/singles/login');
 
 const puppeteer = require('puppeteer');
-const handleManager = require('./db/handleManager');
+const handleManager = require('../modules/handleManager');
 
 (run = async () => {
 

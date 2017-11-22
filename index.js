@@ -17,7 +17,7 @@ const {
   randBetween
 } = require('./utils');
 
-const handleManager = require('./db/handleManager');
+const handleManager = require('./modules/handleManager');
 
 // settings
 const settings = require('./settings.js');

@@ -3,7 +3,7 @@ const logging = require('../utils/logging');
 (async () => {
 
 
-  const handleManager = await require('../db/handleManager').init();
+  const handleManager = await require('../modules/handleManager').init();
 
   const statBreakdown = (handles, header) => {
     console.log('stat breakdown of ', header);

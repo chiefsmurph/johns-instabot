@@ -1,4 +1,4 @@
-const handleManager = require('../../db/handleManager');
+const handleManager = require('../../modules/handleManager');
 
 const alreadyLiked = (url) => {
   return handleManager.filterHandles(handleObj => {
