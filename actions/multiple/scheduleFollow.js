@@ -12,7 +12,7 @@ const logFollow = async (username) => {
   return await handleManager.mergeAndSave(username, {
     youfollowthem: true,
     youfollowedthemon: getDateFormatted(),
-  }, true);
+  });
 };
 
 const scheduleFollow = (username, cookies, browser) => {

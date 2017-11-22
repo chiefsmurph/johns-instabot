@@ -10,7 +10,7 @@ const handleManager = require('./db/handleManager');
 (run = async () => {
 
   console.log('starting');
-
+  await handleManager.init();
   const browser = await puppeteer.launch();
 
   const cookies = await login({

@@ -30,6 +30,7 @@ const settings = require('./settings.js');
 
   try {
 
+    await handleManager.init();
     const browser = await puppeteer.launch();
 
     const cookies = await login({
@@ -37,7 +38,7 @@ const settings = require('./settings.js');
       password: process.env.INSTA_PASSWORD
     }, browser);
 
-    console.log(cookies, 'cookies');
+    // console.log(cookies, 'cookies');
     handleManager.setPuppeteerEnv({
       browser,
       cookies

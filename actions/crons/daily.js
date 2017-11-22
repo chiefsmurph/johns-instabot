@@ -21,6 +21,7 @@ const calcDroppedFollowers = (prevFollowers, currentFollowers) => {
 };
 
 const daily = async (cookies, browser) => {
+  await handleManager.init();
   handleManager.setPuppeteerEnv({
     browser,
     cookies

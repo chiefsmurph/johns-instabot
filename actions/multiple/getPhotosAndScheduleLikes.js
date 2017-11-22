@@ -14,6 +14,7 @@ const handleManager = require('../../db/handleManager');
 
 // utils
 const { randBetween, msToMin } = require('../../utils');
+const getDateFormatted = require('../../utils/getDateFormatted');
 
 // settings
 const settings = require('../../settings.js');
@@ -22,8 +23,8 @@ const settings = require('../../settings.js');
 
 
 const logLike = async (username, likeData) => {
-  await LikeLogs.pushToArray('likes', likeData.url);
-  await fs.appendFile('logs/likes.txt', likeData.url + '\n');
+  // await LikeLogs.pushToArray('likes', likeData.url);
+  // await fs.appendFile('logs/likes.txt', likeData.url + '\n');
   return await handleManager.mergeAndSave(username, {
     postsLiked: [likeData]
   }, true);
@@ -31,12 +32,18 @@ const logLike = async (username, likeData) => {
 
 const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
+  await handleManager.init();
+
   const getRandomPhotosFromTag = async () => {
     const num = randBetween(1, 3); // 1 3
     return await getRecentPhotosForTag(tag, num, cookies, browser);
   };
 
   const scheduleLikeInFuture = (url) => {
+    if (handleManager.alreadyLiked(url)) {
+      throw new Error('already liked this post', url);
+    }
+
     const rangeInMs = settings.likes.waitRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
@@ -46,8 +53,9 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
         const likeData = {
           url,
           relatedtag: tag,
-          waittime: waitTime
-        }
+          waittime: waitTime,
+          date: getDateFormatted()
+        };
         console.log(username, likeData);
         const userData = await logLike(username, likeData);
         if (settings.follows && settings.follows.enabled) {
