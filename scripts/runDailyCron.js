@@ -11,7 +11,7 @@ const handleManager = require('../modules/handleManager');
 
   console.log('starting');
   await handleManager.init();
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: false });
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,
@@ -19,5 +19,6 @@ const handleManager = require('../modules/handleManager');
   }, browser);
 
   const data = await dailyCron(cookies, browser);
+  return;
 
 })();

@@ -1,9 +1,5 @@
 // formatting
-
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
-};
+require('../../utils/replaceAll');
 
 const convertStringToNum = numberString => {
   if (!numberString) return '';

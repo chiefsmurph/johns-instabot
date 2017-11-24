@@ -1,3 +1,6 @@
+// keeps track of all data for every instagram handle that you interact with
+
+
 // db
 const Collection = require('../lib/johns-json-db/collection');
 const Handles = new Collection('handles', './logs');
@@ -20,6 +23,7 @@ const handleManager = (() => {
     mergeAndSave: async (username, data, refresh) => {
       // console.log('merging and saving', username, data);
       if (refresh) {
+        if (!puppeteerEnv.browser) throw new Error('must call setPuppeteerEnv before mergeAndSave with refreshFlag');
         const userData = await getDataForUser(username, puppeteerEnv.cookies, puppeteerEnv.browser);
         data = {
           ...userData,
@@ -29,6 +33,7 @@ const handleManager = (() => {
       return await Handles.mergeAndSaveDoc(username, data);
     },
     setPuppeteerEnv: (env) => {
+      // must set only for mergeAndSave w/ refreshFlag
       puppeteerEnv = env;
     },
     // all handless
@@ -43,6 +48,10 @@ const handleManager = (() => {
         const handleUrls = handleObj.postsLiked.map(like => like.url);
         return handleUrls.indexOf(url) !== -1;
       }).length;
+    },
+    alreadyFollowing: username => {
+      const handleObj = Handles.getDoc(username);
+      return handleObj && handleObj.youfollowthem;
     }
   };
 

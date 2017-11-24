@@ -1,4 +1,4 @@
-
+// keeps track of which likes and follows are currently settimeout'd so you dont attempt an action that is already in the queue
 
 const queueManager = (() => {
 
@@ -13,9 +13,9 @@ const queueManager = (() => {
     },
     likeInQueue: url => likeQueue.includes(url),
     // follows
-    addFollow: username => followQueue.push(url),
+    addFollow: username => followQueue.push(username),
     removeFollow: username => {
-      likeQueue = followQueue.filter(follow => follow !== username);
+      followQueue = followQueue.filter(follow => follow !== username);
     },
     followInQueue: username => followQueue.includes(username),
   };

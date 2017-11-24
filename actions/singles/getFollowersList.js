@@ -9,6 +9,7 @@ const getFollowersList = async (username, cookies, browser) => {
     console.log('url: ', url);
     await page.setCookie(...cookies);
     await page.goto(url);
+    page.on('console', msg => console.log('PAGE LOG:', msg));
   };
 
   const openFollowersModal = async () => {
@@ -20,16 +21,17 @@ const getFollowersList = async (username, cookies, browser) => {
     return await page.evaluate(function() {
       var allLis = [].slice.call(document.querySelectorAll('[role="dialog"] ul li'));
       return allLis.map(function(li) {
+        var username = li.querySelector('div > div > div > div:nth-child(1)');
+        var fullname = li.querySelector('div > div > div > div:nth-child(2)');
         return {
-          username: li.querySelector('div > div > div > div:nth-child(1)').innerText,
-          fullname: li.querySelector('div > div > div > div:nth-child(2)').innerText
+          username: username ? username.innerText : '',
+          fullname: fullname ? fullname.innerText : ''
         };
       });
     });
   };
 
   const scrollFollowersModal = async () => {
-    await page.waitFor(3000)
     return await page.evaluate(function () {
 
       return new Promise(function(resolve, reject) {
@@ -38,11 +40,24 @@ const getFollowersList = async (username, cookies, browser) => {
         // only scroll once
         var beforeHeight = scrollDiv.scrollHeight;
         scrollDiv.scrollTop = beforeHeight;
-        setTimeout(function() {
-          var nowHeight = scrollDiv.scrollHeight;
-          var hitEnd = (beforeHeight === nowHeight);
-          resolve(hitEnd);
-        }, 2000);
+        var b4 = new Date();
+
+        var checker = setInterval(function() {
+          var now = new Date();
+          if (now - b4 > 10000) {
+            clearInterval(checker);
+            return resolve(true);
+          } else {
+            var nowHeight = scrollDiv.scrollHeight;
+            if (nowHeight !== beforeHeight) {
+              // console.log('YES')
+              clearInterval(checker);
+              return setTimeout(() => resolve(false), 300 + Math.random() * 1000);
+            }
+          }
+        }, 100);
+
+
       });
 
     });
@@ -54,7 +69,15 @@ const getFollowersList = async (username, cookies, browser) => {
   };
 
   const getFollowers = async (hitEnd) => {
-    const currentShowingFollowers = await retrieveFollowerUsers();
+    const currentShowingFollowers = await (async function retrieve() {
+      try {
+        return await retrieveFollowerUsers();
+      } catch (e) {
+        console.log('try again', e);
+        return retrieve();
+      }
+    })();
+
     if (shouldStopScrolling(currentShowingFollowers) || hitEnd) {
       return currentShowingFollowers;
     } else {

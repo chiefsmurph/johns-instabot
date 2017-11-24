@@ -17,6 +17,7 @@ const logFollow = async (username) => {
 };
 
 const scheduleFollow = (username, cookies, browser) => {
+
     const rangeInMs = settings.follows.waitRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
