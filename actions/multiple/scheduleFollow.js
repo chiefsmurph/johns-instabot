@@ -9,6 +9,7 @@ const settings = require('../../settings.js');
 // actions
 const followUser = require('../singles/followUser');
 
+
 const logFollow = async (username) => {
   return await handleManager.mergeAndSave(username, {
     youfollowthem: true,
@@ -16,7 +17,7 @@ const logFollow = async (username) => {
   });
 };
 
-const scheduleFollow = (username, cookies, browser) => {
+const scheduleFollow = async (username, cookies, browser) => {
 
     const rangeInMs = settings.follows.waitRange.map(min => min * 1000 * 60);
     const waitTime = randBetween.apply(null, rangeInMs);

@@ -10,7 +10,7 @@ const puppeteer = require('puppeteer');
 // actions
 const login = require('./actions/singles/login');
 const startLiking = require('./actions/multiple/startLiking');
-
+const checkForUnfollows = require('./actions/multiple/checkForUnfollows');
 // utils
 const {
   msToMin,
@@ -46,6 +46,10 @@ const settings = require('./settings.js');
 
     if (settings.likes && settings.likes.enabled) {
       startLiking(settings.likes.tags, cookies, browser);
+    }
+
+    if (settings.follows && settings.follows.targetFollowCount) {
+      checkForUnfollows(cookies, browser);
     }
 
   } catch (e) {

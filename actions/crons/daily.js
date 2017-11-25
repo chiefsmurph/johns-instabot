@@ -13,48 +13,54 @@ const statManager = require('../../modules/statManager');
 // actions
 const getFollowersList = require('../singles/getFollowersList');
 const getDataForUser = require('../singles/getDataForUser');
+const unfollowUser = require('../singles/unfollowUser');
+
 // utils
 const getDateFormatted = require('../../utils/getDateFormatted');
-
-
-
-// helpers
-const calcNewFollowers = (prevFollowers, currentFollowers) => {
-  return currentFollowers.filter(username => prevFollowers.indexOf(username) === -1);
-};
-
-const calcDroppedFollowers = (prevFollowers, currentFollowers) => {
-  return prevFollowers.filter(username => currentFollowers.indexOf(username) === -1);
-};
-
-const handleNewFollowers = async newFollowers => {
-  for (let username of newFollowers) {
-    const prevRecord = handleManager.getHandle(username);
-    const alreadyInDb = !!prevRecord;
-    if (alreadyInDb) console.log(username + ' is already in the db.');
-    await handleManager.mergeAndSave(username, {
-      followsyou: true,
-      followedyouon: getDateFormatted(),
-    }, !alreadyInDb);
-  }
-};
-
-const handleDroppedFollowers = async droppedFollowers => {
-  for (let username of droppedFollowers) {
-    await handleManager.mergeAndSave(username, {
-      neverfollow: true,
-      unfollowedyouon: getDateFormatted(),
-      followsyou: false
-    });
-  }
-};
-
 
 
 
 
 
 const daily = async (cookies, browser) => {
+
+  // helpers
+  const calcNewFollowers = (prevFollowers, currentFollowers) => {
+    return currentFollowers.filter(username => prevFollowers.indexOf(username) === -1);
+  };
+
+  const calcDroppedFollowers = (prevFollowers, currentFollowers) => {
+    return prevFollowers.filter(username => currentFollowers.indexOf(username) === -1);
+  };
+
+  const handleNewFollowers = async newFollowers => {
+    console.log('newFollowers', newFollowers);
+    for (let username of newFollowers) {
+      const prevRecord = handleManager.getHandle(username);
+      const alreadyInDb = !!prevRecord;
+      if (alreadyInDb) console.log(username + ' is already in the db.');
+      await handleManager.mergeAndSave(username, {
+        followsyou: true,
+        followedyouon: getDateFormatted(),
+      }, !alreadyInDb);
+    }
+  };
+
+  const handleDroppedFollowers = async droppedFollowers => {
+    console.log('droppedFollowers', droppedFollowers);
+    for (let username of droppedFollowers) {
+      console.log('unfollowing user', username);
+      await unfollowUser(username, cookies, browser);
+      console.log('done unfollowing now update db');
+      await handleManager.mergeAndSave(username, {
+        neverfollow: true,
+        unfollowedyouon: getDateFormatted(),
+        followsyou: false,
+        youfollowthem: false,
+        youunfollowedthemon: getDateFormatted(),
+      });
+    }
+  };
 
   // init handleManager
   await handleManager.init();
@@ -92,6 +98,10 @@ const daily = async (cookies, browser) => {
     })()
   ]);
 
+  var numNewFollowersFromBot = newFollowers.filter(handleObj => {
+    return handleObj.youfollowedthem || handleObj.postsLiked;
+  }).length;
+
   // if (profileData.numfollowers !== followers.length + 1) throw new Error('what?! your data.numfollowers != the followers we scraped.length');
   // doesn't equal for perhaps private profiles? idk
   const dateOnly = getDateFormatted().split(' ')[0].replaceAll('/', '-');
@@ -101,6 +111,7 @@ const daily = async (cookies, browser) => {
     numfollowings: profileData.numfollowings,
     newfollowers: newFollowers,
     numnewfollowers: newFollowers.length,
+    numnewfollowersfrombot: numNewFollowersFromBot,
     droppedfollowers: droppedFollowers,
     numdroppedfollowers: droppedFollowers.length
   });

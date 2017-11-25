@@ -59,9 +59,9 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
         const userData = await logLike(username, likeData);
         if (settings.follows && settings.follows.enabled) {
           if (!userData.neverfollow && Math.random() < settings.follows.followToLikeRatio) {
-            if (!handleManager.alreadyFollowing(username) && !queueManager.followInQueue(username)) {
+            if (!userData.youfollowedthemon && !queueManager.followInQueue(username)) {
               console.log('scheduling follow of ', username);
-              scheduleFollow(username, cookies, browser);
+              await scheduleFollow(username, cookies, browser);
             }
           }
         }

@@ -7,13 +7,13 @@ module.exports = {
   likes: {
       enabled: true,                // required
       tags: [
-        // 'scrubs',
-        // 'zachbraff',
+        'zachbraff',
         'hipster',
-        // 'indie',
-        // 'indiemusic',
-        // 'piano',
-        // 'songwriter'
+        'indie',
+        'indiemusic',
+        'piano',
+        'songwriter',
+        'hipstyle'
       ],                            // required
       targetPerHour: 70,            // target number of pic likes per hour
       waitRange: [0, 60]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic
@@ -26,8 +26,8 @@ module.exports = {
       waitRange: [0, 60 * 5],
       // waitRange: [0, 0.4],
       unfollowAfterDays: 1,
-      followToLikeRatio: 0.05
+      followToLikeRatio: 0.03,
       // followToLikeRatio: 1,
-      targetFollowCount: 100
+      targetFollowCount: 300
   }
 };

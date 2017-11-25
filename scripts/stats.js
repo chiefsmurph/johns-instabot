@@ -2,7 +2,7 @@ const logging = require('../utils/logging');
 
 (async () => {
 
-  
+
 
   const handleManager = await require('../modules/handleManager').init();
 
@@ -13,6 +13,8 @@ const logging = require('../utils/logging');
     const perc = (numFollow / total * 100).toFixed(2);
     console.log('...of ' + total + ' people', numFollow, ' follow you', '(', perc, '%)\n');
   };
+
+  
 
   // % of people who follow you who you have only liked and not followed
   logging.header('BREAKDOWN BY LIKES VS LIKE & FOLLOWS');
@@ -61,5 +63,8 @@ const logging = require('../utils/logging');
   statBreakdown(peopleWhoFollowMoreThanFollowings, 'peopleWhoFollowMoreThanFollowings');
   statBreakdown(peopleWhoAreFollowedMoreThanTheyFollow, 'peopleWhoAreFollowedMoreThanTheyFollow');
   statBreakdown(peopleWhoFollowTheSameNumberThatTheyAreFollowedBy, 'peopleWhoFollowTheSameNumberThatTheyAreFollowedBy');
+
+
+  return
 
 })();
