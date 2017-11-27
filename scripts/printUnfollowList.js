@@ -3,9 +3,9 @@ const getUnfollowList = require('../helpers/getUnfollowList');
 
 (async () => {
   await handleManager.init()
-  await getUnfollowList();
+  const unfollowList = await getUnfollowList();
 
 
-  console.log(JSON.stringify(inDescOrder, null, 2));
+  console.log(JSON.stringify(unfollowList, null, 2));
 
 })();

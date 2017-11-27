@@ -13,10 +13,15 @@ module.exports = {
         'indiemusic',
         'piano',
         'songwriter',
-        'hipstyle'
+        'hipstyle',
+        'internetcelebrity',
+        'chaos',
+        'dreampop',
+        'indiepop',
+        'experimentalmusic'
       ],                            // required
       targetPerHour: 70,            // target number of pic likes per hour
-      waitRange: [0, 60]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      waitRange: [0, 30]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic
       // waitRange: [0, 0.2]
   },
   comments: null,
@@ -26,7 +31,7 @@ module.exports = {
       waitRange: [0, 60 * 5],
       // waitRange: [0, 0.4],
       unfollowAfterDays: 1,
-      followToLikeRatio: 0.03,
+      followToLikeRatio: 0.01,
       // followToLikeRatio: 1,
       targetFollowCount: 300
   }

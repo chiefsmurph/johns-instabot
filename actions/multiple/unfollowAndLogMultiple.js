@@ -3,9 +3,12 @@ const unfollowAndLog = require('./unfollowAndLog');
 
 const unfollowAndLogMultiple = async (handles, cookies, browser) => {
   console.log('unfollowing', handles);
+
+  let i = 0;
   for (let username of handles) {
     await unfollowAndLog(username, cookies, browser);
-    await timeoutPromise(10000);
+    console.log('finished', ++i, 'of', handles.length);
+    await timeoutPromise(5000 + (Math.random() * 40000));
   }
 };
 

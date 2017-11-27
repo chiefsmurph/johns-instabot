@@ -49,16 +49,22 @@ const daily = async (cookies, browser) => {
   const handleDroppedFollowers = async droppedFollowers => {
     console.log('droppedFollowers', droppedFollowers);
     for (let username of droppedFollowers) {
-      console.log('unfollowing user', username);
-      await unfollowUser(username, cookies, browser);
-      console.log('done unfollowing now update db');
-      await handleManager.mergeAndSave(username, {
+      let data = {
         neverfollow: true,
         unfollowedyouon: getDateFormatted(),
-        followsyou: false,
-        youfollowthem: false,
-        youunfollowedthemon: getDateFormatted(),
-      });
+        followsyou: false
+      }
+      if (handleManager.getHandle(username).youfollowthem) {
+        console.log('unfollowing user', username);
+        await unfollowUser(username, cookies, browser);
+        console.log('done unfollowing now update db');
+        data = {
+          ...data,
+          youfollowthem: false,
+          youunfollowedthemon: getDateFormatted()
+        };
+      }
+      await handleManager.mergeAndSave(username, data);
     }
   };
 
@@ -91,29 +97,54 @@ const daily = async (cookies, browser) => {
       await followManager.set(newFollowersData);
       // step 3: calc and handle new followers
       newFollowers = calcNewFollowers(prevFollowers, followers);
-      handleNewFollowers(newFollowers);
+      await handleNewFollowers(newFollowers);
       // step 4: calc and handle dropped followers
       droppedFollowers = calcDroppedFollowers(prevFollowers, followers);
       await handleDroppedFollowers(droppedFollowers);
     })()
   ]);
 
-  var numNewFollowersFromBot = newFollowers.filter(handleObj => {
+
+  // additional stats
+
+  const numNewFollowersFromBot = newFollowers.filter(handleObj => {
     return handleObj.youfollowedthem || handleObj.postsLiked;
   }).length;
+
+  // effectiveness rate
+
+  const dateWithinPastSevenDays = date => {
+    var today = new Date();
+    var pastWeek = Date.parse(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7));
+    return (Date.parse(date) > pastWeek);
+  };
+  const pastSevenDaysHandles = handleManager.filterHandles(obj => {
+    return (obj.postsLiked && dateWithinPastSevenDays(obj.postsLiked[0].date)) ||
+        (obj.youfollowedthemon && dateWithinPastSevenDays(obj.youfollowedthemon));
+  });
+  const statBreakdown = (handles, header) => {
+    const total = handles.length;
+    const numFollow = handles.filter(obj => obj.followsyou).length;
+    const perc = (numFollow / total * 100).toFixed(2);
+    console.log('...of ' + total + ' people', numFollow, ' follow you', '(', perc, '%)\n');
+    return {
+      total,
+      percfollowback: Number(perc)
+    };
+  };
+  const pastSevenDaysStats = statBreakdown(pastSevenDaysHandles, 'pastSevenDaysHandles');
+
 
   // if (profileData.numfollowers !== followers.length + 1) throw new Error('what?! your data.numfollowers != the followers we scraped.length');
   // doesn't equal for perhaps private profiles? idk
   const dateOnly = getDateFormatted().split(' ')[0].replaceAll('/', '-');
   statManager.set(dateOnly, {
-    numposts: profileData.numposts,
     numfollowers: profileData.numfollowers,
-    numfollowings: profileData.numfollowings,
-    newfollowers: newFollowers,
     numnewfollowers: newFollowers.length,
-    numnewfollowersfrombot: numNewFollowersFromBot,
-    droppedfollowers: droppedFollowers,
-    numdroppedfollowers: droppedFollowers.length
+    numdroppedfollowers: droppedFollowers.length,
+    pastSevenDaysStats,
+    numfollowings: profileData.numfollowings,
+    numposts: profileData.numposts,
   });
 
 

@@ -14,7 +14,7 @@ const logging = require('../utils/logging');
     console.log('...of ' + total + ' people', numFollow, ' follow you', '(', perc, '%)\n');
   };
 
-  
+
 
   // % of people who follow you who you have only liked and not followed
   logging.header('BREAKDOWN BY LIKES VS LIKE & FOLLOWS');
@@ -29,9 +29,9 @@ const logging = require('../utils/logging');
   statBreakdown(peopleWhoYouHaveLikedAndFollowed, 'peopleWhoYouHaveLikedAndFollowed');
 
   // breakdown by tag
-  logging.header('BREAKDOWN BY TAG');
+  logging.header('BREAKDOWN BY TAG [LIKES ONLY]');
   const peopleYouHaveLiked = handleManager.filterHandles(handleObj => {
-    return handleObj.postsLiked;
+    return handleObj.postsLiked && !handleObj.youfollowedthemon;
   });
   const data = {};
   peopleYouHaveLiked.forEach(handleObj => {
@@ -65,6 +65,6 @@ const logging = require('../utils/logging');
   statBreakdown(peopleWhoFollowTheSameNumberThatTheyAreFollowedBy, 'peopleWhoFollowTheSameNumberThatTheyAreFollowedBy');
 
 
-  return
+  return;
 
 })();
