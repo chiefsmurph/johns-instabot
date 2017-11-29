@@ -1,4 +1,4 @@
-const maxFollowersAtATime = 200;
+const maxFollowersAtATime = 2000;
 
 const getFollowersList = async (username, cookies, browser) => {
 
@@ -36,26 +36,38 @@ const getFollowersList = async (username, cookies, browser) => {
 
       return new Promise(function(resolve, reject) {
         var scrollDiv = document.querySelector('[role="dialog"] > div > div > div:nth-child(2)');
+        var scrollAttempts = 0;
 
         // only scroll once
-        var beforeHeight = scrollDiv.scrollHeight;
-        scrollDiv.scrollTop = beforeHeight;
-        var b4 = new Date();
+        (function scrollIt() {
 
-        var checker = setInterval(function() {
-          var now = new Date();
-          if (now - b4 > 10000) {
-            clearInterval(checker);
-            return resolve(true);
-          } else {
-            var nowHeight = scrollDiv.scrollHeight;
-            if (nowHeight !== beforeHeight) {
-              // console.log('YES')
-              clearInterval(checker);
-              return setTimeout(() => resolve(false), 300 + Math.random() * 1000);
-            }
-          }
-        }, 100);
+          var beforeHeight = scrollDiv.scrollHeight;
+          scrollDiv.scrollTop = 0;
+
+          setTimeout(function() {
+            scrollDiv.scrollTop = beforeHeight;
+            var b4 = new Date();
+            scrollAttempts++;
+
+            var checker = setInterval(function() {
+              var now = new Date();
+              var nowHeight = scrollDiv.scrollHeight;
+              if (nowHeight !== beforeHeight) {
+                clearInterval(checker);
+                return setTimeout(() => resolve(false), 300 + Math.random() * 3000);
+              } else if (now - b4 > 5000 && scrollAttempts < 3) {
+                clearInterval(checker);
+                return scrollIt();
+              } else if (now - b4 > 10000) {
+                clearInterval(checker);
+                return resolve(true);
+              }
+            }, 100);
+
+          }, Math.random() * 2000);
+
+        })();
+
 
 
       });
@@ -65,7 +77,7 @@ const getFollowersList = async (username, cookies, browser) => {
 
   const cleanUp = async () => {
     console.log('done getting followers of ' + username);
-    await page.close();
+    // await page.close();
   };
 
   const getFollowers = async (hitEnd) => {

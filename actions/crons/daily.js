@@ -14,15 +14,33 @@ const statManager = require('../../modules/statManager');
 const getFollowersList = require('../singles/getFollowersList');
 const getDataForUser = require('../singles/getDataForUser');
 const unfollowUser = require('../singles/unfollowUser');
+const login = require('../singles/login');
 
 // utils
 const getDateFormatted = require('../../utils/getDateFormatted');
 
 
 
+const puppeteer = require('puppeteer');
 
 
-const daily = async (cookies, browser) => {
+
+
+const daily = async () => {
+
+
+  // init
+
+  const handleManager = require('../../modules/handleManager');
+
+  console.log('starting');
+  await handleManager.init();
+  const browser = await puppeteer.launch({headless: false});
+
+  const cookies = await login({
+    username: process.env.INSTA_USERNAME,
+    password: process.env.INSTA_PASSWORD
+  }, browser);
 
   // helpers
   const calcNewFollowers = (prevFollowers, currentFollowers) => {
@@ -34,7 +52,6 @@ const daily = async (cookies, browser) => {
   };
 
   const handleNewFollowers = async newFollowers => {
-    console.log('newFollowers', newFollowers);
     for (let username of newFollowers) {
       const prevRecord = handleManager.getHandle(username);
       const alreadyInDb = !!prevRecord;
@@ -47,7 +64,6 @@ const daily = async (cookies, browser) => {
   };
 
   const handleDroppedFollowers = async droppedFollowers => {
-    console.log('droppedFollowers', droppedFollowers);
     for (let username of droppedFollowers) {
       let data = {
         neverfollow: true,
@@ -97,9 +113,11 @@ const daily = async (cookies, browser) => {
       await followManager.set(newFollowersData);
       // step 3: calc and handle new followers
       newFollowers = calcNewFollowers(prevFollowers, followers);
+      console.log('newFollowers', newFollowers);
       await handleNewFollowers(newFollowers);
       // step 4: calc and handle dropped followers
       droppedFollowers = calcDroppedFollowers(prevFollowers, followers);
+      console.log('droppedFollowers', droppedFollowers);
       await handleDroppedFollowers(droppedFollowers);
     })()
   ]);
@@ -149,6 +167,7 @@ const daily = async (cookies, browser) => {
 
 
 
+  // await browser.close();
 
 };
 
