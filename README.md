@@ -14,6 +14,7 @@ INSTA_PASSWORD=mypassword
 and then
 
 npm install
+
 npm start
 
 
