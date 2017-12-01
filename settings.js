@@ -7,18 +7,20 @@ module.exports = {
   likes: {
       enabled: true,                // required
       tags: [
-        'zachbraff',
+        // 'zachbraff',
         'hipster',
         'indie',
         'indiemusic',
         'piano',
         'songwriter',
         'hipstyle',
-        'internetcelebrity',
+        // 'internetcelebrity',
         'chaos',
         'dreampop',
         'indiepop',
-        'experimentalmusic'
+        'experimentalmusic',
+        'awesome',
+        'randpaul'
       ],                            // required
       targetPerHour: 70,            // target number of pic likes per hour
       waitRange: [0, 30]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic

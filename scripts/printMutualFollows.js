@@ -1,5 +1,4 @@
 const handleManager = require('../modules/handleManager');
-const getUnfollowList = require('../helpers/getUnfollowList');
 
 (async () => {
   await handleManager.init()

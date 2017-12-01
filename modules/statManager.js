@@ -7,12 +7,16 @@ const statManager = (() => {
 
   console.log('here');
 
-  (async () => {
-    await Stats.init();
-    console.log('done initing stats');
-  })();
+  // (async () => {
+  //
+  //
+  // })();
 
   return {
+    init: async () => {
+      await Stats.init();
+      console.log('done initing stats');
+    },
     get: (day) => Stats.getDoc(day),
     getAll: () => Stats.getAll(),
     set: async (day, data) => {
@@ -20,6 +24,23 @@ const statManager = (() => {
         throw new Error('stats already set for this day: ', day)
       }
       await Stats.mergeAndSaveDoc(day, data);
+    },
+    getStatsOverTime: () => {
+      const objStats = Stats.getAll({ format: 'object' });
+      const returnStats = {};
+      console.log(Object.keys(objStats));
+      return Object.keys(objStats).reduce((acc, day, i) => {
+        console.log(i, day);
+        Object.keys(objStats[day]).forEach(key => {
+          console.log(key, 'key')
+          acc = {
+            ...acc,
+            [key]: (acc[key] || []).concat(objStats[day][key])
+          };
+          console.log(key, objStats[day][key], objStats[day]);
+        });
+        return acc;
+      }, {});
     }
   };
 
