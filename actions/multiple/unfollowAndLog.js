@@ -13,10 +13,11 @@ const logUnfollow = async username => {
 const unfollowAndLog = async (username, cookies, browser) => {
   try {
     await unfollowUser(username, cookies, browser);
+    await logUnfollow(username);
   } catch (e) {
-    console.log('error', e);
+    throw e;
   }
-  await logUnfollow(username);
+
 };
 
 module.exports = unfollowAndLog;

@@ -17,7 +17,7 @@ const unfollowAndLogMultiple = require('../actions/multiple/unfollowAndLogMultip
 
 (async () => {
   await handleManager.init();
-  const browser = await puppeteer.launch({ headless: true});
+  const browser = await puppeteer.launch({ headless: true });
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,
