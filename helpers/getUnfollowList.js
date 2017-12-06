@@ -12,6 +12,7 @@ const getUnfollowList = () => {
     youfollowedthemon: new Date(handleObj.youfollowedthemon)
   })).sort((a, b) => a.youfollowedthemon - b.youfollowedthemon);
 
+  console.log(inDescOrder);
   return inDescOrder;
 
 };

@@ -52,6 +52,9 @@ const handleManager = (() => {
     alreadyFollowing: username => {
       const handleObj = Handles.getDoc(username);
       return handleObj && handleObj.youfollowthem;
+    },
+    deleteKeys: async (username, keys) => {
+      return await Handles.deleteKeys(username, keys);
     }
   };
 

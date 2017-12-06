@@ -35,7 +35,7 @@ const daily = async () => {
 
   console.log('starting');
   await handleManager.init();
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({headless: true});
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,
@@ -70,15 +70,20 @@ const daily = async () => {
         unfollowedyouon: getDateFormatted(),
         followsyou: false
       }
-      if (handleManager.getHandle(username).youfollowthem) {
+      const foundHandle = handleManager.getHandle(username);
+      if (foundHandle && foundHandle.youfollowthem) {
         console.log('unfollowing user', username);
-        await unfollowUser(username, cookies, browser);
-        console.log('done unfollowing now update db');
-        data = {
-          ...data,
-          youfollowthem: false,
-          youunfollowedthemon: getDateFormatted()
-        };
+        try {
+          await unfollowUser(username, cookies, browser);
+          console.log('done unfollowing now update db');
+          data = {
+            ...data,
+            youfollowthem: false,
+            youunfollowedthemon: getDateFormatted()
+          };
+        } catch (e) {
+          console.log('db said you were following ', username, ' but you are not')
+        }
       }
       await handleManager.mergeAndSave(username, data);
     }
@@ -167,7 +172,7 @@ const daily = async () => {
 
 
 
-  // await browser.close();
+  await browser.close();
 
 };
 

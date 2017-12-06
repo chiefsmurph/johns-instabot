@@ -10,6 +10,7 @@ const settings = require('../../settings.js');
 const checkForUnfollows = async (cookies, browser) => {
 
   const numFollowing = getNumFollowing();
+  console.log('checking for unfollows, numfollowing: ', numFollowing);
   if (settings.follows.targetFollowCount < numFollowing) {
     const numToUnfollow = Math.floor((numFollowing - settings.follows.targetFollowCount) / 10);
     console.log('numFollowing', numFollowing, 'numToUnfollow,', numToUnfollow);

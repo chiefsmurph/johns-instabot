@@ -14,7 +14,7 @@ const handleManager = require('../modules/handleManager');
 
 (async () => {
   await handleManager.init();
-  const browser = await puppeteer.launch({ headless: false});
+  const browser = await puppeteer.launch({ headless: true });
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,
@@ -29,15 +29,12 @@ const handleManager = require('../modules/handleManager');
 
   console.log('followingList', followingList);
 
-  for (let obj of followingList) {
-    const username = obj.username;
+  for (let username of followingList) {
     const handleObj = handleManager.getHandle(username);
-
-
-    if (!handleObj || !handleObj.youfollowedthemon) {
-      console.log('username', username);
-      console.log('handleObj', handleObj);
-      console.log('handleObj.youfollowedthemon', (handleObj ? handleObj.youfollowedthemon : '') );
+    console.log('username', username);
+    // console.log('handleObj', handleObj);
+    if (!handleObj || !handleObj.youfollowedthemon || !handleObj.youfollowthem) {
+      // console.log('handleObj.youfollowedthemon', (handleObj ? handleObj.youfollowedthemon : '') );
       // await timeoutPromise(4000);
       await handleManager.mergeAndSave(username, {
         youfollowthem: true,

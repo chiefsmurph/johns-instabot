@@ -13,7 +13,7 @@ const runDaily = async () => {
   const data = await dailyCron();
 
 };
-
+runDaily();
 const dailyCronJob = new cron.CronJob('00 01 00 * * *', runDaily).start();
 
 console.log('daily cron started at ', getDateFormatted());

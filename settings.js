@@ -35,6 +35,6 @@ module.exports = {
       unfollowAfterDays: 1,
       followToLikeRatio: 0.01,
       // followToLikeRatio: 1,
-      targetFollowCount: 300
+      targetFollowCount: 150
   }
 };

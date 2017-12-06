@@ -77,7 +77,7 @@ const getFollowersList = async (username, cookies, browser) => {
 
   const cleanUp = async () => {
     console.log('done getting followers of ' + username);
-    // await page.close();
+    await page.close();
   };
 
   const getFollowers = async (hitEnd) => {

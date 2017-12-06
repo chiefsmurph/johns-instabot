@@ -15,6 +15,9 @@ const unfollowAndLog = async (username, cookies, browser) => {
     await unfollowUser(username, cookies, browser);
     await logUnfollow(username);
   } catch (e) {
+    if (e.toString().indexOf('not currently following user') !== -1) {
+      await logUnfollow(username);
+    }
     throw e;
   }
 

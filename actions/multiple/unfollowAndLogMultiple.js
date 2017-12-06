@@ -16,7 +16,7 @@ const unfollowAndLogMultiple = async (handles, cookies, browser) => {
         break;
       }
     }
-    await timeoutPromise(5000 + (Math.random() * 40000));
+    await timeoutPromise(10000 + (Math.random() * 40000));
   }
 };
 
