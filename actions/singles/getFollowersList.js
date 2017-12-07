@@ -12,6 +12,13 @@ const getFollowersList = async (username, cookies, browser) => {
     page.on('console', msg => console.log('PAGE LOG:', msg));
   };
 
+  let currentFollowerCount;
+  const getCurrentFollowerCount = async () => {
+    return await page.evaluate(() => {
+      return document.querySelector('article > header > section > ul > li:nth-child(2) > a > span').innerText;
+    });
+  };
+
   const openFollowersModal = async () => {
     await page.click('article > header > section > ul > li:nth-child(2) > a');
     await page.waitFor(2000);
@@ -110,8 +117,13 @@ const getFollowersList = async (username, cookies, browser) => {
   try {
     console.log('getting followers of ', username);
     await navigateToUserPage();
+    currentFollowerCount = await getCurrentFollowerCount();
+    console.log('currentFollowercount', currentFollowerCount);
     await openFollowersModal();
     followers = await getFollowers();
+    if (followers.length > currentFollowerCount - 1) {
+      throw new Error('unable to get to bottom of followers modal');
+    }
   } catch (e) {
     console.error(e, username);
     if (retrigTimes < 3) {

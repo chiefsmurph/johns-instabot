@@ -119,11 +119,11 @@ const daily = async () => {
       // step 3: calc and handle new followers
       newFollowers = calcNewFollowers(prevFollowers, followers);
       console.log('newFollowers', newFollowers);
-      await handleNewFollowers(newFollowers);
+      // await handleNewFollowers(newFollowers);
       // step 4: calc and handle dropped followers
       droppedFollowers = calcDroppedFollowers(prevFollowers, followers);
       console.log('droppedFollowers', droppedFollowers);
-      await handleDroppedFollowers(droppedFollowers);
+      // await handleDroppedFollowers(droppedFollowers);
     })()
   ]);
 
@@ -161,14 +161,14 @@ const daily = async () => {
   // if (profileData.numfollowers !== followers.length + 1) throw new Error('what?! your data.numfollowers != the followers we scraped.length');
   // doesn't equal for perhaps private profiles? idk
   const dateOnly = getDateFormatted().split(' ')[0].replaceAll('/', '-');
-  statManager.set(dateOnly, {
-    numfollowers: profileData.numfollowers,
-    numnewfollowers: newFollowers.length,
-    numdroppedfollowers: droppedFollowers.length,
-    pastSevenDaysStats,
-    numfollowings: profileData.numfollowings,
-    numposts: profileData.numposts,
-  });
+  // statManager.set(dateOnly, {
+  //   numfollowers: profileData.numfollowers,
+  //   numnewfollowers: newFollowers.length,
+  //   numdroppedfollowers: droppedFollowers.length,
+  //   pastSevenDaysStats,
+  //   numfollowings: profileData.numfollowings,
+  //   numposts: profileData.numposts,
+  // });
 
 
 

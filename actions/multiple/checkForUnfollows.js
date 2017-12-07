@@ -12,9 +12,10 @@ const checkForUnfollows = async (cookies, browser) => {
   const numFollowing = getNumFollowing();
   console.log('checking for unfollows, numfollowing: ', numFollowing);
   if (settings.follows.targetFollowCount < numFollowing) {
-    const numToUnfollow = Math.floor((numFollowing - settings.follows.targetFollowCount) / 10);
-    console.log('numFollowing', numFollowing, 'numToUnfollow,', numToUnfollow);
     const unfollowList = getUnfollowList();
+    const numToUnfollow = Math.ceil((numFollowing - settings.follows.targetFollowCount) / 10);
+    console.log('numFollowing', numFollowing, 'unfollowlistcount', unfollowList.length, 'numToUnfollow,', numToUnfollow);
+
     const toUnfollow = unfollowList.slice(0, numToUnfollow).map(handleObj => handleObj.username);
     await unfollowAndLogMultiple(toUnfollow, cookies, browser);
   }

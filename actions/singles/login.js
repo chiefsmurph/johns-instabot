@@ -1,3 +1,6 @@
+require('dotenv').config()
+
+
 // auth = {username: 'abc', password: 'def'}
 const timeoutPromise = require('../../utils/timeoutPromise');
 
@@ -7,6 +10,7 @@ const login = async (auth, browser, retrigTimes = 0) => {
 
   const navigateToLoginPage = async () => {
     await page.goto('https:/instagram.com/accounts/login/');
+    await page.waitFor(3000);
     console.log('opened login page');
   };
 

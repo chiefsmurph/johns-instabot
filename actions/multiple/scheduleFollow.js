@@ -7,15 +7,8 @@ const queueManager = require('../../modules/queueManager');
 // settings
 const settings = require('../../settings.js');
 // actions
-const followUser = require('../singles/followUser');
+const followAndLog = require('../multiple/followAndLog');
 
-
-const logFollow = async (username) => {
-  return await handleManager.mergeAndSave(username, {
-    youfollowthem: true,
-    youfollowedthemon: getDateFormatted(),
-  });
-};
 
 const scheduleFollow = async (username, cookies, browser) => {
 
@@ -23,9 +16,8 @@ const scheduleFollow = async (username, cookies, browser) => {
     const waitTime = randBetween.apply(null, rangeInMs);
     setTimeout(async () => {
       try {
-        await followUser(username, cookies, browser);
+        await followAndLog(username, cookies, browser);
         queueManager.removeFollow(username);
-        await logFollow(username);
       } catch (e) {
         console.error('followUser error', e, 'though we shouldnt care because it was handled in followUser');
       }
