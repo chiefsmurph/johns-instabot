@@ -52,6 +52,7 @@ const daily = async () => {
   };
 
   const handleNewFollowers = async newFollowers => {
+    console.log('handling new followers');
     for (let username of newFollowers) {
       const prevRecord = handleManager.getHandle(username);
       const alreadyInDb = !!prevRecord;
@@ -64,6 +65,7 @@ const daily = async () => {
   };
 
   const handleDroppedFollowers = async droppedFollowers => {
+    console.log('handling dropped followers');
     for (let username of droppedFollowers) {
       let data = {
         neverfollow: true,
@@ -116,14 +118,14 @@ const daily = async () => {
         followers
       };
       await followManager.set(newFollowersData);
-      // step 3: calc and handle new followers
+      // step 3: calc new and dropped followers
       newFollowers = calcNewFollowers(prevFollowers, followers);
       console.log('newFollowers', newFollowers);
-      // await handleNewFollowers(newFollowers);
-      // step 4: calc and handle dropped followers
       droppedFollowers = calcDroppedFollowers(prevFollowers, followers);
       console.log('droppedFollowers', droppedFollowers);
-      // await handleDroppedFollowers(droppedFollowers);
+      // step 4: handle new and dropped followers
+      await handleNewFollowers(newFollowers);
+      await handleDroppedFollowers(droppedFollowers);
     })()
   ]);
 
@@ -161,14 +163,14 @@ const daily = async () => {
   // if (profileData.numfollowers !== followers.length + 1) throw new Error('what?! your data.numfollowers != the followers we scraped.length');
   // doesn't equal for perhaps private profiles? idk
   const dateOnly = getDateFormatted().split(' ')[0].replaceAll('/', '-');
-  // statManager.set(dateOnly, {
-  //   numfollowers: profileData.numfollowers,
-  //   numnewfollowers: newFollowers.length,
-  //   numdroppedfollowers: droppedFollowers.length,
-  //   pastSevenDaysStats,
-  //   numfollowings: profileData.numfollowings,
-  //   numposts: profileData.numposts,
-  // });
+  statManager.set(dateOnly, {
+    numfollowers: profileData.numfollowers,
+    numnewfollowers: newFollowers.length,
+    numdroppedfollowers: droppedFollowers.length,
+    pastSevenDaysStats,
+    numfollowings: profileData.numfollowings,
+    numposts: profileData.numposts,
+  });
 
 
 

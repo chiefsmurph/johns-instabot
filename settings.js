@@ -8,22 +8,30 @@ module.exports = {
       enabled: true,                // required
       tags: [
         // 'zachbraff',
-        'hipster',
-        'indie',
+        // 'hipster',
+        // 'indie',
         'indiemusic',
-        'piano',
-        'songwriter',
-        'hipstyle',
+        // 'piano',
+        // 'songwriter',
+        // 'hipstyle',
         // 'internetcelebrity',
-        'chaos',
-        'dreampop',
-        'indiepop',
+        // 'chaos',
+        // 'dreampop',
+        // 'indiepop',
         'experimentalmusic',
-        'awesome',
-        'randpaul'
-      ],                            // required
-      targetPerHour: 70,            // target number of pic likes per hour
-      waitRange: [0, 30]            // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+        // 'awesome',
+        // 'randpaul',
+        'followforfollow',
+        'diddykongracing',
+        'amazingview',
+        'party',
+        'gangsta',
+        'lovers',
+        'suburban',
+        'instagram'
+      ],                                // required
+      targetPerHour: 80,                // target number of pic likes per hour
+      waitRange: [0, 10]                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
       // waitRange: [0, 0.2]
   },
   comments: null,

@@ -3,7 +3,7 @@ const followUser = require('../singles/followUser');
 
 const getDateFormatted = require('../../utils/getDateFormatted');
 
-const logUnfollow = async username => {
+const logFollow = async username => {
   return await handleManager.mergeAndSave(username, {
     youfollowthem: true,
     youfollowedthemon: getDateFormatted(),
@@ -15,7 +15,7 @@ const followAndLog = async (username, cookies, browser) => {
     await followUser(username, cookies, browser);
     await logFollow(username);
   } catch (e) {
-    if (e.toString().indexOf('currently following user') !== -1) {
+    if (e.toString().indexOf('already following user') !== -1) {
       await logFollow(username);
     }
     throw e;

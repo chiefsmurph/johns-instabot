@@ -48,6 +48,7 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
       try {
         const { username } = await likePicture(url, cookies, browser);
         queueManager.removeLike(url);
+        if (!username) { return; }
         console.log('username', username);
         const likeData = {
           url,
