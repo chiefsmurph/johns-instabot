@@ -16,7 +16,11 @@ const startLiking = async (categories, cookies, browser) => {
   return (async function continuallyRun() {
 
     const randCategory = categories[randBetween(0, categories.length - 1)];
-    await getPhotosAndScheduleLikes(randCategory, cookies, browser);
+    try {
+      await getPhotosAndScheduleLikes(randCategory, cookies, browser);
+    } catch (e) {
+      console.log('get photos and schedule likes error', e);
+    }
 
     // calculate wait time
     const { targetPerHour } = settings.likes;

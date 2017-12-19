@@ -29,18 +29,24 @@ const statManager = (() => {
       const objStats = Stats.getAll({ format: 'object' });
       const returnStats = {};
       console.log(Object.keys(objStats));
-      return Object.keys(objStats).reduce((acc, day, i) => {
-        console.log(i, day);
-        Object.keys(objStats[day]).forEach(key => {
-          console.log(key, 'key')
-          acc = {
-            ...acc,
-            [key]: (acc[key] || []).concat(objStats[day][key])
-          };
-          console.log(key, objStats[day][key], objStats[day]);
-        });
-        return acc;
-      }, {});
+      const chronKeys = Object.keys(objStats)
+          .sort((a, b) => {
+            return new Date(a) - new Date(b);
+          });
+      console.log('chron keuys', chronKeys);
+      return chronKeys
+          .reduce((acc, day, i) => {
+            console.log(i, day);
+            Object.keys(objStats[day]).forEach(key => {
+              console.log(key, 'key', objStats[day][key], 'val')
+              acc = {
+                ...acc,
+                [key]: (acc[key] || []).concat(objStats[day][key])
+              };
+              // console.log(key, objStats[day][key], objStats[day]);
+            });
+            return acc;
+          }, {});
     }
   };
 
