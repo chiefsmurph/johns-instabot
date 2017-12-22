@@ -82,8 +82,7 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
   const num = randBetween(1, 3); // 1 3
   const photosOfInterest = randomRecentPhotos
     .filter(url => !handleManager.alreadyLiked(url))
-    .filter(url => !queueManager.likeInQueue(url))
-    .sort(() => Math.random() > Math.random());
+    .filter(url => !queueManager.likeInQueue(url));
 
   const filteredByPrevLiked = [];
   for (let url of photosOfInterest) {
@@ -92,14 +91,21 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
     console.log('picurl: ', url);
     console.log('related username: ', relatedUsername);
     console.log('num likes: ', numLikes);
-    if (numLikes < 3) filteredByPrevLiked.push(url);
+    if (numLikes < settings.likes.maxLikesPerUser) {
+      filteredByPrevLiked.push(url);
+    }
     if (filteredByPrevLiked.length === num) {
-      console.log('got it bro');
+      console.log('got em bro');
       break;
     }
   }
 
+  if (filteredByPrevLiked.length !== num) {
+    console.log('unable to find enough fresh content to meet quota of ' + num + ' pics');
+  }
+
   const aFewRands = filteredByPrevLiked
+    .sort(() => Math.random() > Math.random())
     .splice(0, num);
 
   aFewRands.forEach(scheduleLikeInFuture);
