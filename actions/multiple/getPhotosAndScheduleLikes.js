@@ -4,6 +4,8 @@ const fs = require('mz/fs');
 // actions
 const getRecentPhotosForTag = require('../singles/getRecentPhotosForTag');
 const likePicture = require('../singles/likePicture');
+const getRelatedUsernameOfPic = require('../singles/getRelatedUsernameOfPic');
+
 const scheduleFollow = require('./scheduleFollow');
 
 // lib
@@ -80,9 +82,24 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
   const num = randBetween(1, 3); // 1 3
   const photosOfInterest = randomRecentPhotos
     .filter(url => !handleManager.alreadyLiked(url))
-    .filter(url => !queueManager.likeInQueue(url));
-  const aFewRands = photosOfInterest
-    .sort(() => Math.random() > Math.random())
+    .filter(url => !queueManager.likeInQueue(url))
+    .sort(() => Math.random() > Math.random());
+
+  const filteredByPrevLiked = [];
+  for (let url of photosOfInterest) {
+    const relatedUsername = await getRelatedUsernameOfPic(url, cookies, browser);
+    const numLikes = (handleManager.getHandle(relatedUsername).postsLiked || []).length;
+    console.log('picurl: ', url);
+    console.log('related username: ', relatedUsername);
+    console.log('num likes: ', numLikes);
+    if (numLikes < 3) filteredByPrevLiked.push(url);
+    if (filteredByPrevLiked.length === num) {
+      console.log('got it bro');
+      break;
+    }
+  }
+
+  const aFewRands = filteredByPrevLiked
     .splice(0, num);
 
   aFewRands.forEach(scheduleLikeInFuture);

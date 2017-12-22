@@ -19,7 +19,7 @@ const handleManager = (() => {
       return handleManager;
     },
     // get and save individuals
-    getHandle: (username) => Handles.getDoc(username),
+    getHandle: (username) => Handles.getDoc(username) || {},
     mergeAndSave: async (username, data, refresh) => {
       // console.log('merging and saving', username, data);
       if (refresh) {

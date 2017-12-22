@@ -23,13 +23,13 @@ const getRecentPhotosForTag = async (tag, cookies, browser, retrigTimes = 0) => 
     await page.screenshot({ path: 'screenshots/relatedpng.png' });
 
     picUrls = picUrls.splice(9);
-    const beforeLength = picUrls.length;
-    console.log('beforeLength', beforeLength);
-    picUrls = picUrls.filter(url => !handleManager.alreadyLiked(url));
-    const afterLength = picUrls.length;
-    if (beforeLength !== afterLength) {
-      console.log('found ' + (beforeLength - afterLength) + ' pictures that were already liked in this tag retreival');
-    }
+    // const beforeLength = picUrls.length;
+    // console.log('beforeLength', beforeLength);
+    // picUrls = picUrls;
+    // const afterLength = picUrls.length;
+    // if (beforeLength !== afterLength) {
+    //   console.log('found ' + (beforeLength - afterLength) + ' pictures that were already liked in this tag retreival');
+    // }
     return picUrls;
   };
 

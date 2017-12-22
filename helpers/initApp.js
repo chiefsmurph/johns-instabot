@@ -9,7 +9,7 @@ const handleManager = require('../modules/handleManager');
 module.exports = async() => {
 
   await handleManager.init();
-  const browser = await puppeteer.launch({headless: true });
+  const browser = await puppeteer.launch({headless: false });
 
   const cookies = await login({
     username: process.env.INSTA_USERNAME,

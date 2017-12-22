@@ -7,28 +7,15 @@ module.exports = {
   likes: {
       enabled: true,                // required
       tags: [
-        // 'zachbraff',
-        // 'hipster',
-        // 'indie',
-        'indiemusic',
-        'piano',
-        // 'songwriter',
-        // 'hipstyle',
-        // 'internetcelebrity',
-        // 'chaos',
-        'dreampop',
+        // 'indiemusic',
+        // 'piano',
+        // 'dreampop',
         'indiepop',
-        'experimentalmusic',
-        // 'awesome',
-        // 'randpaul',
-        'followforfollow',
-        'diddykongracing',
-        // 'amazingview',
-        // 'party',
-        'gangsta',
-        // 'lovers',
-        'suburban',
-        // 'instagram'
+        // 'experimentalmusic',
+        // 'followforfollow',
+        // 'diddykongracing',
+        // 'gangsta',
+        // 'suburban',
       ],                                // required
       targetPerHour: 80,                // target number of pic likes per hour
       waitRange: [0, 10]                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
