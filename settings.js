@@ -23,7 +23,7 @@ module.exports = {
         // 'randpaul',
         'followforfollow',
         'diddykongracing',
-        'amazingview',
+        // 'amazingview',
         // 'party',
         'gangsta',
         // 'lovers',

@@ -12,7 +12,10 @@ const unfollowAndLogMultiple = async (handles, cookies, browser) => {
     } catch (e) {
       console.log('unfollow error from unfollowandlogmultiple', e);
       if (e.toString().indexOf('rate-limited') !== -1) {
-        console.log('detected rate-limited.  stopping unfollowall.  wait some time then try again');
+        console.log('detected rate-limited.  stopping unfollowall.  wait 10 minutes then trying again');
+        await timeoutPromise(10 * 1000 * 60);
+        console.log('starting up again');
+        await unfollowAndLogMultiple(handles.splice(i), cookies, browser);
         break;
       }
     }
