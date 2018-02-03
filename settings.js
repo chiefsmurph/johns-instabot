@@ -22,9 +22,9 @@ module.exports = {
         'selfies'
       ],                                // required
       targetPerHour: 80,                // target number of pic likes per hour
-      waitRange: [0, 10],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      waitRange: [0, 160],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
       // waitRange: [0, 0.2]
-      maxLikesPerUser: 2
+      maxLikesPerUser: 4
   },
   comments: null,
   follows: {

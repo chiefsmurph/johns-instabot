@@ -5,6 +5,7 @@ const fs = require('mz/fs');
 const getRecentPhotosForTag = require('../singles/getRecentPhotosForTag');
 const likePicture = require('../singles/likePicture');
 const getRelatedUsernameOfPic = require('../singles/getRelatedUsernameOfPic');
+const getDataForUser = require('../singles/getDataForUser');
 
 const scheduleFollow = require('./scheduleFollow');
 
@@ -78,37 +79,78 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
   };
 
   // run
+
+
+  // this is where for every tag scrape it likes randomNum (1-3) pics from randomNum different users
+
   const randomRecentPhotos = await getRecentPhotosForTag(tag, cookies, browser);
   const num = randBetween(1, 3); // 1 3
+
+
+  // this is where for every tag scrape it likes randomNum (1-3) pics from 1 single users
+
   const photosOfInterest = randomRecentPhotos
     .filter(url => !handleManager.alreadyLiked(url))
     .filter(url => !queueManager.likeInQueue(url));
 
-  const filteredByPrevLiked = [];
+  console.log('length photos', photosOfInterest.length);
   for (let url of photosOfInterest) {
+
     const relatedUsername = await getRelatedUsernameOfPic(url, cookies, browser);
-    const numLikes = (handleManager.getHandle(relatedUsername).postsLiked || []).length;
-    console.log('picurl: ', url);
-    console.log('related username: ', relatedUsername);
-    console.log('num likes: ', numLikes);
-    if (numLikes < settings.likes.maxLikesPerUser) {
-      filteredByPrevLiked.push(url);
+    const hasPwned = !!(handleManager.getHandle(relatedUsername).hasPwned);
+    if (hasPwned) continue;
+
+    const userData = await getDataForUser(relatedUsername, cookies, browser);
+    if (userData.numfollowers < userData.numfollowings || userData.numfollowings < 50 || userData.numposts < 30) {
+      console.log(userData.numfollowers, userData.numfollowings, userData.numposts);
+      continue;
     }
-    if (filteredByPrevLiked.length === num) {
-      console.log('got em bro');
-      break;
-    }
+
+    let usersPics = userData.userspics;
+    usersPics = usersPics
+        .sort(() => Math.random() > Math.random())
+        .splice(0, num - 1)
+        .map(code => 'https://www.instagram.com/p/' + code);
+
+    usersPics.concat([url]).forEach(scheduleLikeInFuture);
+    await handleManager.mergeAndSave(relatedUsername, {
+      hasPwned: true
+    });
+
+    break;
+
   }
 
-  if (filteredByPrevLiked.length !== num) {
-    console.log('unable to find enough fresh content to meet quota of ' + num + ' pics');
-  }
 
-  const aFewRands = filteredByPrevLiked
-    .sort(() => Math.random() > Math.random())
-    .splice(0, num);
+  // this is where for every tag scrape it likes randomNum (1-3) pics from randomNum different users
 
-  aFewRands.forEach(scheduleLikeInFuture);
+  //
+  // const filteredByPrevLiked = [];
+  // for (let url of photosOfInterest) {
+  //   const relatedUsername = await getRelatedUsernameOfPic(url, cookies, browser);
+  //   const numLikes = (handleManager.getHandle(relatedUsername).postsLiked || []).length;
+  //   console.log('picurl: ', url);
+  //   console.log('related username: ', relatedUsername);
+  //   console.log('num likes: ', numLikes);
+  //   if (numLikes < settings.likes.maxLikesPerUser) {
+  //     filteredByPrevLiked.push(url);
+  //   }
+  //   if (filteredByPrevLiked.length === num) {
+  //     console.log('got em bro');
+  //     break;
+  //   }
+  // }
+  //
+  // if (filteredByPrevLiked.length !== num) {
+  //   console.log('unable to find enough fresh content to meet quota of ' + num + ' pics');
+  // }
+  //
+  // const aFewRands = filteredByPrevLiked
+  //   .sort(() => Math.random() > Math.random())
+  //   .splice(0, num);
+  //
+  // aFewRands.forEach(scheduleLikeInFuture);
+
   return;
 
 };

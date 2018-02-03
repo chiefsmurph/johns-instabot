@@ -159,7 +159,6 @@ const daily = async () => {
   };
   const pastSevenDaysStats = statBreakdown(pastSevenDaysHandles, 'pastSevenDaysHandles');
 
-
   // if (profileData.numfollowers !== followers.length + 1) throw new Error('what?! your data.numfollowers != the followers we scraped.length');
   // doesn't equal for perhaps private profiles? idk
   const dateOnly = getDateFormatted().split(' ')[0].replaceAll('/', '-');

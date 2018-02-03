@@ -37,7 +37,8 @@ const getDataForUser = async (username, cookies, browser) => {
       numposts: await getInnerText('article > header > section > ul > li > span > span'),
       numfollowers: await getInnerText('article > header > section > ul > li:nth-child(2) > a > span'),
       numfollowings: await getInnerText('article > header > section > ul > li:nth-child(3) > a > span'),
-      fullname: await getInnerText('article > header > section > div:nth-child(3) > h1')
+      fullname: await getInnerText('article > header > section > div:nth-child(3) > h1'),
+      userspics: await page.evaluate(() => window._sharedData.entry_data.ProfilePage[0].user.media.nodes.map(node => node.code))
     };
   };
 
