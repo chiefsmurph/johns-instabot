@@ -13,13 +13,12 @@ module.exports = {
         'indierock',
         'indiepop',
         'experimentalmusic',
-        'followforfollow',
-        'diddykongracing',
-        'gangsta',
-        'suburban',
-        'comedy',
+        'albumrelease',
+        'diymusic',
+        'pitchfork',
         'benkweller',
-        'selfies'
+        'animalcollective',
+        'beachhousemusic'
       ],                                // required
       targetPerHour: 80,                // target number of pic likes per hour
       waitRange: [0, 160],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic

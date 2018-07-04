@@ -4,3 +4,4 @@ likes/*
 logs/*
 screenshots/*
 .env
+!.keep
