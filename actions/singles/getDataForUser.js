@@ -46,10 +46,10 @@ const getDataForUser = async (username, cookies, browser) => {
       }
     };
     return {
-      numposts: await getInnerText('article > header > section > ul > li > span > span'),
-      numfollowers: await getInnerText('article > header > section > ul > li:nth-child(2) > a > span'),
-      numfollowings: await getInnerText('article > header > section > ul > li:nth-child(3) > a > span'),
-      fullname: await getInnerText('article > header > section > div:nth-child(3) > h1'),
+      numposts: convertStringToNum(await getInnerText('main > div > header > section > ul > li > span > span')),
+      numfollowers: convertStringToNum(await getInnerText('main > div > header > section > ul > li:nth-child(2) > a > span')),
+      numfollowings: convertStringToNum(await getInnerText('main > div > header > section > ul > li:nth-child(3) > a > span')),
+      fullname: await getInnerText('main > div > header > section > div:nth-child(3) > h1'),
       userspics: await getUsersPics()
     };
   };
@@ -65,9 +65,11 @@ const getDataForUser = async (username, cookies, browser) => {
     console.log('getting data of ', username);
     await navigateToUserPage();
     data = await retrieveDataUsers();
-    ['numposts', 'numfollowers', 'numfollowings'].forEach(key => {
-      data[key] = convertStringToNum(data[key]);
-    });
+    // console.log('data', data)
+    // ['numposts', 'numfollowers', 'numfollowings'].forEach(key => {
+    //     console.log('converting', key, data[key])
+    //   data[key] = convertStringToNum(data[key]);
+    // });
   } catch (e) {
     console.error(e, username);
   } finally {

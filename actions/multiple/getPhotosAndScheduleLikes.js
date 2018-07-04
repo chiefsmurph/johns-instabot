@@ -40,6 +40,7 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
   await handleManager.init();
 
   const scheduleLikeInFuture = (url) => {
+      console.log('scheduling like', url)
     if (handleManager.alreadyLiked(url)) {
       throw new Error('already liked this post', url);
     }
@@ -102,17 +103,18 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
     if (hasPwned) continue;
 
     const userData = await getDataForUser(relatedUsername, cookies, browser);
-    if (userData.numfollowers < userData.numfollowings || userData.numfollowings < 50 || userData.numposts < 30) {
-      console.log(userData.numfollowers, userData.numfollowings, userData.numposts);
-      continue;
-    }
+    // if (userData.numfollowers < userData.numfollowings || userData.numfollowings < 50 || userData.numposts < 30) {
+    //   console.log(userData.numfollowers, userData.numfollowings, userData.numposts);
+    //   continue;
+    // }
 
     let usersPics = userData.userspics;
     usersPics = usersPics
         .sort(() => Math.random() > Math.random())
         .splice(0, num - 1)
         .map(code => 'https://www.instagram.com/p/' + code);
-
+    if (!usersPics.includes(url)) usersPics = [...usersPics, url];
+    console.log('userpics', usersPics)
     usersPics.concat([url]).forEach(scheduleLikeInFuture);
     await handleManager.mergeAndSave(relatedUsername, {
       hasPwned: true

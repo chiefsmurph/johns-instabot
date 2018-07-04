@@ -20,8 +20,8 @@ module.exports = {
         'animalcollective',
         'beachhousemusic'
       ],                                // required
-      targetPerHour: 20,                // target number of pic likes per hour
-      waitRange: [0, 160],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      targetPerHour: 40,                // target number of pic likes per hour
+      waitRange: [0, 60],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
       // waitRange: [0, 0.2]
       maxLikesPerUser: 4
   },

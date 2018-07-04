@@ -14,7 +14,7 @@ const likePicture = async (url, cookies, browser, retrigTimes = 0) => {
   };
 
   const clickLike = async () => {
-    await page.click('article > div > section > a');
+    await page.click('article > div > section > span > button');
     await page.waitFor(3000);
   };
 

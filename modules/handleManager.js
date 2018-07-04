@@ -21,7 +21,7 @@ const handleManager = (() => {
     // get and save individuals
     getHandle: (username) => Handles.getDoc(username) || {},
     mergeAndSave: async (username, data, refresh) => {
-      // console.log('merging and saving', username, data);
+      console.log('merging and saving', username, data);
       if (refresh) {
         if (!puppeteerEnv.browser) throw new Error('must call setPuppeteerEnv before mergeAndSave with refreshFlag');
         const userData = await getDataForUser(username, puppeteerEnv.cookies, puppeteerEnv.browser);
