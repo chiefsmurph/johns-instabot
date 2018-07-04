@@ -91,7 +91,8 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
 
   const photosOfInterest = randomRecentPhotos
     .filter(url => !handleManager.alreadyLiked(url))
-    .filter(url => !queueManager.likeInQueue(url));
+    .filter(url => !queueManager.likeInQueue(url))
+    .slice(0, num);
 
   console.log('length photos', photosOfInterest.length);
   for (let url of photosOfInterest) {

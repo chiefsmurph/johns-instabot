@@ -33,12 +33,24 @@ const getDataForUser = async (username, cookies, browser) => {
         return null
       }
     };
+    const getUsersPics = async () => {
+      try {
+        return await page.evaluate(() => {
+            const allImgs = [...document.querySelectorAll('a > div > div > img')];
+            const allAs = allImgs.map(el => el.parentElement.parentElement.parentElement);
+            const allPhotoIds = allAs.map(d => d.href.split('/')[4]);
+            return allPhotoIds;
+        });
+      } catch (e) {
+        return null
+      }
+    };
     return {
       numposts: await getInnerText('article > header > section > ul > li > span > span'),
       numfollowers: await getInnerText('article > header > section > ul > li:nth-child(2) > a > span'),
       numfollowings: await getInnerText('article > header > section > ul > li:nth-child(3) > a > span'),
       fullname: await getInnerText('article > header > section > div:nth-child(3) > h1'),
-      userspics: await page.evaluate(() => window._sharedData.entry_data.ProfilePage[0].user.media.nodes.map(node => node.code))
+      userspics: await getUsersPics()
     };
   };
 
