@@ -85,11 +85,12 @@ const getPhotosAndScheduleLikes = async (tag, cookies, browser) => {
   // this is where for every tag scrape it likes randomNum (1-3) pics from randomNum different users
 
   const randomRecentPhotos = await getRecentPhotosForTag(tag, cookies, browser);
+  
   const num = randBetween(1, 3); // 1 3
 
 
   // this is where for every tag scrape it likes randomNum (1-3) pics from 1 single users
-
+  console.log({ randomRecentPhotos, num })
   const photosOfInterest = randomRecentPhotos
     .filter(url => !handleManager.alreadyLiked(url))
     .filter(url => !queueManager.likeInQueue(url))

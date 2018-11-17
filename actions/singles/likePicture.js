@@ -19,7 +19,7 @@ const likePicture = async (url, cookies, browser, retrigTimes = 0) => {
   };
 
   const getUsername = async() => {
-    return await page.evaluate(() => document.querySelector('article > header > div > div > div > a').innerText);
+    return await page.evaluate(() => document.querySelector('article > header > div > div > div > h2 > a').textContent);
   };
 
   const screenshot = async () => {

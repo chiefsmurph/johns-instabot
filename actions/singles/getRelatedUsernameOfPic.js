@@ -17,7 +17,7 @@ const getRelatedUsernameOfPic = async (picUrl, cookies, browser) => {
   // run
   try {
     await navigateToPhotoPage();
-    return await page.evaluate(() => document.querySelector('article > header div > div > a').textContent);
+    return await page.evaluate(() => document.querySelector('article > header > div > div > div > h2 > a').textContent);
   } catch (e) {
     console.error(e, picUrl);
   } finally {

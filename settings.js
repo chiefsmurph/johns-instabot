@@ -7,21 +7,13 @@ module.exports = {
   likes: {
       enabled: true,                // required
       tags: [
-        'indiemusic',
-        'piano',
-        'dreampop',
-        'indierock',
-        'indiepop',
-        'experimentalmusic',
-        'albumrelease',
-        'diymusic',
-        'pitchfork',
-        'benkweller',
-        'animalcollective',
-        'beachhousemusic'
+        'funny',
+        'internetstars',
+        'comedian',
+        'youtubepersonality'
       ],                                // required
       targetPerHour: 40,                // target number of pic likes per hour
-      waitRange: [0, 60],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
+      waitRange: [0, 1],                // a random amount of time between these two lengths of time in minutes to wait before liking the pic
       // waitRange: [0, 0.2]
       maxLikesPerUser: 4
   },

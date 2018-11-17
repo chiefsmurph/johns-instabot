@@ -19,7 +19,7 @@ const login = async (auth, browser, retrigTimes = 0) => {
     await page.type('input[name="username"]', auth.username);
     await page.type('input[name="password"]', auth.password)
     console.log('finished typing now submitting!');
-    await page.click('button')
+    await page.click('form > div > button')
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
   };
 
